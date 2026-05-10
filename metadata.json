@@ -1,0 +1,6 @@
+{
+  "name": "Memory Sphere",
+  "description": "A spatial 3D experience where you can interact with your memories using hand tracking and webcam input.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": []
+}
