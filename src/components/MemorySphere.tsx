@@ -155,36 +155,52 @@ export function MemorySphere({ memories, resultsRef, sensitivity, onGestureMode 
 
     _inverseGroupQuat.copy(groupRef.current.quaternion).invert();
 
-    // --- Input: two-hand zoom, one-hand rotate, or mouse ---
+    // --- Pinch-to-Grab Gesture Paradigm ---
+    // A hand is only "active" if the thumb and index finger are pinching.
     const results = resultsRef.current;
     const handCount = results?.multiHandLandmarks?.length ?? 0;
     const hasHands = handCount >= 1;
-    const hasTwoHands = handCount >= 2;
 
-    if (hasTwoHands) {
-      // ═══ TWO-HAND MODE: Anchor (Left) + Action (Right) ═══
-      // Left hand acts as a stabilizer/clutch. Right hand controls rotation and zoom.
-      let actionHand = results.multiHandLandmarks[0];
-      
-      // Identify the Right hand as the action hand
-      if (results.multiHandedness && results.multiHandedness.length >= 2) {
-        if (results.multiHandedness[0].label === 'Right') {
-          actionHand = results.multiHandLandmarks[0];
-        } else if (results.multiHandedness[1].label === 'Right') {
-          actionHand = results.multiHandLandmarks[1];
-        }
-      } else {
-        // Fallback: Mirrored selfie view means Right hand has lower X
-        if (results.multiHandLandmarks[0][9].x < results.multiHandLandmarks[1][9].x) {
-          actionHand = results.multiHandLandmarks[0];
-        } else {
-          actionHand = results.multiHandLandmarks[1];
+    const PINCH_THRESHOLD = 0.05;
+    const activeHands = [];
+
+    if (hasHands) {
+      for (let i = 0; i < handCount; i++) {
+        const hand = results.multiHandLandmarks[i];
+        const thumb = hand[4];
+        const index = hand[8];
+        const pinchDist = Math.sqrt(Math.pow(thumb.x - index.x, 2) + Math.pow(thumb.y - index.y, 2));
+        
+        if (pinchDist < PINCH_THRESHOLD) {
+          activeHands.push(hand);
         }
       }
+    }
 
-      // --- Rotation (Action Hand Move) ---
-      const hx = actionHand[9].x;
-      const hy = actionHand[9].y;
+    if (activeHands.length >= 2) {
+      // ═══ TWO-HAND PINCH: Spread to Zoom ═══
+      const h0 = activeHands[0][9];
+      const h1 = activeHands[1][9];
+      const dist = Math.sqrt(Math.pow(h0.x - h1.x, 2) + Math.pow(h0.y - h1.y, 2));
+
+      if (prevTwoHandDist.current !== null) {
+        const delta = dist - prevTwoHandDist.current;
+        if (Math.abs(delta) > ZOOM_DEAD_ZONE) {
+          zoomT.current = THREE.MathUtils.clamp(
+            zoomT.current + delta * ZOOM_VEL_GAIN,
+            0, 2
+          );
+        }
+      }
+      prevTwoHandDist.current = dist;
+      prevHandPos.current = null; // Clear rotate state
+      handActive.current = true;
+      onGestureMode?.('zoom');
+
+    } else if (activeHands.length === 1) {
+      // ═══ ONE-HAND PINCH: Move to Rotate/Scroll ═══
+      const hx = activeHands[0][9].x;
+      const hy = activeHands[0][9].y;
 
       if (prevHandPos.current !== null) {
         const dx = hx - prevHandPos.current.x;
@@ -193,55 +209,12 @@ export function MemorySphere({ memories, resultsRef, sensitivity, onGestureMode 
         if (Math.abs(dy) > HAND_DEAD_ZONE) rotVel.current.x += dy * sensitivity * HAND_VEL_GAIN;
       }
       prevHandPos.current = { x: hx, y: hy };
-
-      // --- Zoom (Action Hand Pinch) ---
-      const thumb = actionHand[4];
-      const indexFinger = actionHand[8];
-      const pinchDist = Math.sqrt(
-        Math.pow(thumb.x - indexFinger.x, 2) + Math.pow(thumb.y - indexFinger.y, 2)
-      );
-
-      if (prevPinchDist.current !== null) {
-        const delta = pinchDist - prevPinchDist.current;
-        // Spreading fingers (delta > 0) -> zoom in
-        // Pinching fingers (delta < 0) -> zoom out
-        if (Math.abs(delta) > ZOOM_DEAD_ZONE * 0.5) {
-          zoomT.current = THREE.MathUtils.clamp(
-            zoomT.current + delta * ZOOM_VEL_GAIN * 3,
-            0, 2
-          );
-        }
-      }
-      prevPinchDist.current = pinchDist;
-      prevTwoHandDist.current = null; // Clear unused state
-      
-      handActive.current = true;
-      onGestureMode?.('zoom');
-
-    } else if (hasHands) {
-      // ═══ ONE-HAND MODE: rotate the sphere ═══
-      prevTwoHandDist.current = null; // reset so next 2-hand entry starts fresh
-      prevPinchDist.current = null;
-
-      const landmarks = results.multiHandLandmarks[0];
-      const hx = landmarks[9].x;
-      const hy = landmarks[9].y;
-
-      if (prevHandPos.current !== null) {
-        const dx = hx - prevHandPos.current.x;
-        const dy = hy - prevHandPos.current.y;
-        // Dead zone: ignore micro-tremors
-        if (Math.abs(dx) > HAND_DEAD_ZONE)
-          rotVel.current.y += dx * sensitivity * HAND_VEL_GAIN;
-        if (Math.abs(dy) > HAND_DEAD_ZONE)
-          rotVel.current.x += dy * sensitivity * HAND_VEL_GAIN;
-      }
-      prevHandPos.current = { x: hx, y: hy };
+      prevTwoHandDist.current = null; // Clear zoom state
       handActive.current = true;
       onGestureMode?.('rotate');
 
     } else {
-      // ═══ NO HANDS: clear state for clean re-entry ═══
+      // ═══ NO ACTIVE PINCH: Hovering (Letting go of the sphere) ═══
       prevHandPos.current = null;
       prevTwoHandDist.current = null;
       handActive.current = false;
