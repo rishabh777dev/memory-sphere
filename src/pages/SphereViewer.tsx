@@ -9,7 +9,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { useHandTracking } from '../hooks/useHandTracking';
 import { MemorySphere } from '../components/MemorySphere';
 import { Memory } from '../types';
-import { getAllMemories, saveMemory, clearAllMemories } from '../lib/db';
 import { supabase } from '../lib/supabase';
 
 const { motion, AnimatePresence } = FramerMotion;
