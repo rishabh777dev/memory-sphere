@@ -66,7 +66,7 @@ The application is built on a modern, serverless stack designed for extreme fron
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/memory-sphere.git
+   git clone https://github.com/rishabh777dev/memory-sphere.git
    cd memory-sphere
    ```
 
