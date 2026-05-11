@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./public/favicon.svg" alt="Spatial Memories Logo" width="120" />
+  <img src="./public/S.svg" alt="Spatial Memories Logo" width="120" />
   
   # Spatial Memories
   
@@ -30,8 +30,10 @@ Using your webcam and Google's MediaPipe, you can navigate your photographic mem
 
 - **Touchless Spatial Navigation:** Navigate the 3D space using natural hand gestures.
 - **Pinch-to-Grab Mechanics:** Advanced Apple Vision Pro style gesture resolution. 
-  - *One-Hand Pinch:* Grab and rotate the memory sphere.
+  - *One-Hand Pinch:* Grab and navigate the memory sphere.
   - *Two-Hand Pinch:* Spread to zoom in, pinch to zoom out.
+- **Customizable Navigation:** Toggle instantly between "Look Mode" (First-person view) and "Drag Mode" (Touchscreen surface) to match your mental model.
+- **Vault Manager:** A frosted-glass dashboard for managing multiple isolated spheres. Features inline renaming, drag-and-drop uploads, and instant photo deletion.
 - **Cloud Synchronization:** Fully integrated with Supabase for secure, real-time cloud storage and user authentication.
 - **Premium UI/UX:** Awwwards-inspired landing page with smooth Framer Motion reveals, 3D Canvas backgrounds, and a high-performance spring-physics cursor.
 - **Privacy First:** All computer vision hand-tracking runs 100% locally in your browser via WebGL. No video is ever sent to a server.
@@ -50,7 +52,7 @@ The application is built on a modern, serverless stack designed for extreme fron
 
 - **Frontend Framework:** Vite + React + TypeScript
 - **3D Rendering:** Three.js via React Three Fiber (`@react-three/fiber`)
-- **Computer Vision:** Google MediaPipe Tasks Vision (`@mediapipe/tasks-vision`)
+- **Computer Vision:** Google MediaPipe Hands (`@mediapipe/hands`)
 - **Backend & Auth:** Supabase (PostgreSQL, Row Level Security, S3 Storage)
 - **Styling:** TailwindCSS + Framer Motion
 
