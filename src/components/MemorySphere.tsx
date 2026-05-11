@@ -16,6 +16,7 @@ interface MemorySphereProps {
   resultsRef: React.RefObject<Results | null>;
   sensitivity: number;
   onGestureMode?: (mode: 'idle' | 'rotate' | 'zoom') => void;
+  invertControls?: boolean;
 }
 
 // ---------- constants ----------
@@ -86,7 +87,7 @@ function buildSpherePoints(count: number, radius: number): THREE.Vector3[] {
   return points;
 }
 
-export function MemorySphere({ memories, resultsRef, sensitivity, onGestureMode }: MemorySphereProps) {
+export function MemorySphere({ memories, resultsRef, sensitivity, onGestureMode, invertControls = false }: MemorySphereProps) {
   const groupRef = useRef<THREE.Group>(null);
   const meshRefs = useRef<(THREE.Mesh | null)[]>([]);
   const { camera, size } = useThree();
@@ -205,8 +206,11 @@ export function MemorySphere({ memories, resultsRef, sensitivity, onGestureMode 
       if (prevHandPos.current !== null) {
         const dx = hx - prevHandPos.current.x;
         const dy = hy - prevHandPos.current.y;
-        if (Math.abs(dx) > HAND_DEAD_ZONE) rotVel.current.y += dx * sensitivity * HAND_VEL_GAIN;
-        if (Math.abs(dy) > HAND_DEAD_ZONE) rotVel.current.x += dy * sensitivity * HAND_VEL_GAIN;
+        
+        // dir = 1 for Drag, -1 for Look
+        const dir = invertControls ? -1 : 1;
+        if (Math.abs(dx) > HAND_DEAD_ZONE) rotVel.current.y += dx * sensitivity * HAND_VEL_GAIN * dir;
+        if (Math.abs(dy) > HAND_DEAD_ZONE) rotVel.current.x += dy * sensitivity * HAND_VEL_GAIN * dir;
       }
       prevHandPos.current = { x: hx, y: hy };
       prevTwoHandDist.current = null; // Clear zoom state
@@ -256,14 +260,16 @@ export function MemorySphere({ memories, resultsRef, sensitivity, onGestureMode 
       // When mouse goes idle we stop this lerp so auto-rotation can accumulate freely
       smoothRotation.current.x = THREE.MathUtils.lerp(smoothRotation.current.x, mousePos.current.x, 0.06);
       smoothRotation.current.y = THREE.MathUtils.lerp(smoothRotation.current.y, mousePos.current.y, 0.06);
+      
+      const dir = invertControls ? -1 : 1;
       groupRef.current.rotation.y = THREE.MathUtils.lerp(
         groupRef.current.rotation.y,
-        -smoothRotation.current.x * sensitivity,
+        smoothRotation.current.x * sensitivity * dir,
         0.05
       );
       groupRef.current.rotation.x = THREE.MathUtils.lerp(
         groupRef.current.rotation.x,
-        smoothRotation.current.y * sensitivity,
+        -smoothRotation.current.y * sensitivity * dir, // Re-added the negative sign to sync with Hand Y-axis
         0.05
       );
     }

@@ -1,0 +1,68 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A1A1A" />
+      <stop offset="100%" stop-color="#050505" />
+    </linearGradient>
+    
+    <!-- Stroke Gradient -->
+    <linearGradient id="strokeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#333333" />
+      <stop offset="100%" stop-color="#000000" />
+    </linearGradient>
+    
+    <!-- Cyberpunk/Spatial Neon Gradient -->
+    <linearGradient id="neonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00FF94" />
+      <stop offset="50%" stop-color="#00A3FF" />
+      <stop offset="100%" stop-color="#7000FF" />
+    </linearGradient>
+    
+    <!-- Neon Glow Filter -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="20" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    
+    <!-- Soft Glow Filter -->
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Premium Dark Glass Base -->
+  <circle cx="256" cy="256" r="230" fill="url(#bgGrad)" stroke="url(#strokeGrad)" stroke-width="12" />
+  
+  <!-- Outer glowing ring -->
+  <circle cx="256" cy="256" r="190" fill="none" stroke="rgba(0, 255, 148, 0.15)" stroke-width="2" />
+  
+  <!-- Dashed orbital ring -->
+  <circle cx="256" cy="256" r="150" fill="none" stroke="rgba(255, 255, 255, 0.1)" stroke-width="2" stroke-dasharray="10 15" />
+
+  <!-- The Glowing "S" Base -->
+  <path d="M 330 190 C 330 100, 182 100, 182 190 C 182 256, 330 256, 330 322 C 330 412, 182 412, 182 322" 
+        stroke="url(#neonGrad)" 
+        stroke-width="48" 
+        stroke-linecap="round" 
+        fill="none" 
+        filter="url(#glow)"/>
+        
+  <!-- Core highlight for 3D glass effect -->
+  <path d="M 330 190 C 330 100, 182 100, 182 190 C 182 256, 330 256, 330 322 C 330 412, 182 412, 182 322" 
+        stroke="#FFFFFF" 
+        stroke-width="12" 
+        stroke-linecap="round" 
+        fill="none" 
+        opacity="0.8"
+        filter="url(#softGlow)"/>
+        
+  <!-- Secondary inner highlight line -->
+  <path d="M 330 190 C 330 100, 182 100, 182 190 C 182 256, 330 256, 330 322 C 330 412, 182 412, 182 322" 
+        stroke="#FFFFFF" 
+        stroke-width="2" 
+        stroke-linecap="round" 
+        fill="none" 
+        opacity="1"/>
+</svg>

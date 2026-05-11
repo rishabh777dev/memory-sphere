@@ -1,61 +1,98 @@
-# 🌐 Spatial Memory Sphere
+<div align="center">
+  <img src="./public/favicon.svg" alt="Spatial Memories Logo" width="120" />
+  
+  # Spatial Memories
+  
+  **Touch the Intangible. A futuristic, touchless 3D vault for your photo albums.**
 
-A cutting-edge 3D spatial interface for viewing memories and images, fully controllable through **hand gestures** via your webcam. 
+  [![React](https://img.shields.io/badge/React-18-blue.svg)](https://reactjs.org/)
+  [![Three.js](https://img.shields.io/badge/Three.js-R3F-black.svg)](https://docs.pmnd.rs/react-three-fiber/)
+  [![MediaPipe](https://img.shields.io/badge/MediaPipe-Vision-orange.svg)](https://developers.google.com/mediapipe)
+  [![Supabase](https://img.shields.io/badge/Supabase-Backend-green.svg)](https://supabase.com/)
 
-This project explores a futuristic, touch-less way to interact with media in a 3D space, similar to sci-fi spatial interfaces. The images are mapped onto a mathematical Fibonacci sphere, which you can rotate, zoom into, and navigate using just your hands.
-
----
-
-## 🛠️ Technologies Used
-
-- **React + Vite + TypeScript**: Core framework for building the UI and managing application state.
-- **Three.js & React-Three-Fiber (R3F)**: The 3D engine used to render the memories, calculate the Fibonacci sphere layout, and manage the camera mathematically.
-- **Google MediaPipe Hands**: Machine Learning library used for real-time, browser-based hand tracking.
-- **IndexedDB (`idb`)**: Used to persist user-uploaded memories locally in the browser so they aren't lost on refresh.
-- **Tailwind CSS & Framer Motion**: For the sleek, premium UI styling and fluid animations.
-
----
-
-## ✋ How the Hand Gesture Tracking Works
-
-The application uses **Google MediaPipe**, not OpenCV. 
-
-Unlike traditional computer vision approaches that require heavy backend processing (like OpenCV), **MediaPipe runs entirely in your browser** using WebAssembly and WebGL. This means your webcam video feed is processed locally on your machine and is **never sent to a server**, ensuring complete privacy and blazing-fast 60 FPS performance.
-
-### The Technical Flow:
-1. **Landmark Detection**: Every frame, MediaPipe scans the webcam feed and maps out **21 3D coordinates (landmarks)** on your hands.
-2. **Velocity-Based Rotation**: Instead of mapping your hand's absolute position directly to the sphere's angle (which causes jitter), we calculate the *delta* (change in position) of **Landmark 9 (the center of your palm)**. This creates a "flywheel" effect—moving your hand pushes the sphere, and stopping your hand leaves it perfectly still.
-3. **Pinch-to-Zoom Math**: We continuously calculate the Euclidean distance between **Landmark 4 (Thumb tip)** and **Landmark 8 (Index Finger tip)**. When this distance expands or contracts, we map it via linear interpolation (`lerp`) to our 3D camera's FOV and Z-axis position.
+  <p align="center">
+    <a href="#features">Features</a> •
+    <a href="#interaction-paradigm">Gestures</a> •
+    <a href="#architecture">Architecture</a> •
+    <a href="#getting-started">Installation</a>
+  </p>
+</div>
 
 ---
 
-## 🎮 Interaction Guide
+## 🌌 Overview
 
-### 1. Two-Handed Precision Mode (Anchor + Action)
-Hold up **both hands** for ultimate control:
-- **Left Hand (Anchor)**: Hold it steady. This acts as a clutch to enable precision mode.
-- **Right Hand (Action)**: 
-  - **Scroll / Rotate**: Move your right hand in the air to spin the sphere.
-  - **Zoom**: Pinch your right thumb and index finger together to zoom out. Spread them apart to zoom in (Super-Zoom).
+**Spatial Memories** (formerly Memory Sphere) is a paradigm shift in digital archiving. It abandons traditional 2D scrolling interfaces in favor of a boundless, interactive mathematical sphere. 
 
-### 2. Single-Handed Mode
-Hold up **one hand**:
-- Move your hand up/down/left/right to freely rotate the sphere.
-- Drop your hand to let the sphere coast to a smooth stop via inertia.
+Using your webcam and Google's MediaPipe, you can navigate your photographic memories using pure spatial hand gestures—no mouse or keyboard required.
 
-### 3. Idle Mode
-- If no hands are detected and the mouse hasn't moved for 1.5 seconds, the sphere will enter an **auto-rotate** state, spinning slowly on its Y-axis like the Earth.
+## ✨ Features
 
-### 4. Mouse Fallback
-- If you don't grant camera permissions, the system gracefully falls back to mouse tracking. Moving your mouse across the screen will pan the camera, and your scroll wheel handles the 3-phase zoom.
+- **Touchless Spatial Navigation:** Navigate the 3D space using natural hand gestures.
+- **Pinch-to-Grab Mechanics:** Advanced Apple Vision Pro style gesture resolution. 
+  - *One-Hand Pinch:* Grab and rotate the memory sphere.
+  - *Two-Hand Pinch:* Spread to zoom in, pinch to zoom out.
+- **Cloud Synchronization:** Fully integrated with Supabase for secure, real-time cloud storage and user authentication.
+- **Premium UI/UX:** Awwwards-inspired landing page with smooth Framer Motion reveals, 3D Canvas backgrounds, and a high-performance spring-physics cursor.
+- **Privacy First:** All computer vision hand-tracking runs 100% locally in your browser via WebGL. No video is ever sent to a server.
 
----
+## ✋ Interaction Paradigm
+
+We built a custom gesture engine to eliminate "domino effects" (accidental interactions) commonly found in hand-tracking apps. 
+
+1. **Hovering (Safe Mode):** Open hands do nothing.
+2. **Rotate (1-Hand Pinch):** Pinch your right thumb and index finger together to "grab" the sphere. Move your hand to spin it.
+3. **Zoom (2-Hand Pinch):** Pinch both hands. Move them apart to zoom into a photo. 
+
+## 🏗️ Architecture
+
+The application is built on a modern, serverless stack designed for extreme frontend performance:
+
+- **Frontend Framework:** Vite + React + TypeScript
+- **3D Rendering:** Three.js via React Three Fiber (`@react-three/fiber`)
+- **Computer Vision:** Google MediaPipe Tasks Vision (`@mediapipe/tasks-vision`)
+- **Backend & Auth:** Supabase (PostgreSQL, Row Level Security, S3 Storage)
+- **Styling:** TailwindCSS + Framer Motion
 
 ## 🚀 Getting Started
 
-1. Clone the repository.
-2. Run `npm install` to install dependencies.
-3. Run `npm run dev` to start the local development server.
-4. Allow camera access when prompted by your browser.
+### Prerequisites
+- Node.js 18+
+- A free [Supabase](https://supabase.com/) account.
 
-*(Ensure you are in a well-lit environment for the hand tracking AI to perform optimally).*
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/memory-sphere.git
+   cd memory-sphere
+   ```
+
+2. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up Environment Variables**
+   Create a `.env` file in the root directory and add your Supabase keys:
+   ```env
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
+
+4. **Initialize Database**
+   Run the provided SQL script in your Supabase SQL Editor to generate the necessary tables (`albums`, `photos`) and configure Row Level Security (RLS).
+
+5. **Start Development Server**
+   ```bash
+   npm run dev
+   ```
+
+## 🤝 Contributing
+
+This is an open-source experiment in spatial computing. Contributions are highly welcome!
+Whether it's adding audio micro-interactions, optimizing the WebGL render pipeline, or improving the computer vision models, feel free to open a Pull Request.
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
