@@ -122,7 +122,7 @@ export default function Landing() {
             Built for the future. An open-source spatial computing experiment.
           </div>
           <div className="flex gap-8 text-[10px] uppercase tracking-widest font-bold">
-            <a href="https://github.com/your-repo" className="hover:text-art-accent transition-colors">GitHub Repository</a>
+            <a href="https://github.com/rishabh777dev/memory-sphere" className="hover:text-art-accent transition-colors">GitHub Repository</a>
             <span className="text-art-text-dim">/</span>
             <a href="#" className="hover:text-art-accent transition-colors">Architecture Doc</a>
           </div>
