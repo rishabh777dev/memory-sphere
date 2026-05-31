@@ -17,9 +17,9 @@ export default function SphereViewer() {
   const { id: albumId } = useParams();
   const navigate = useNavigate();
   
-  const [hasError, setHasError] = useState(false);
+  const [photosLoading, setPhotosLoading] = useState(true);
   
-  // Initial fallback memories
+  // Initial fallback memories — shown only while real photos are loading
   const initialMemRef = useMemo(() => Array.from({ length: 24 }).map((_, i) => ({
     id: uuidv4(),
     url: `https://picsum.photos/seed/mem${i}/800/800`,
@@ -50,27 +50,20 @@ export default function SphereViewer() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const { resultsRef, isCameraDenied } = useHandTracking(videoRef, cameraStarted);
 
-  const requestCamera = async () => {
-    try {
-      const probe = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-      probe.getTracks().forEach(t => t.stop());
-    } catch {
-      // Permission denied
-    } finally {
-      setCameraStarted(true);
-    }
+  // Remove the probe stream — useHandTracking handles camera acquisition itself.
+  // The probe was redundant and caused two permission requests.
+  const requestCamera = () => {
+    setCameraStarted(true);
   };
 
   // Load photos for this specific album
   useEffect(() => {
     async function load() {
       if (!albumId) return;
-
+      setPhotosLoading(true);
       try {
         const { data, error } = await supabase.from('photos').select('*').eq('album_id', albumId);
-        
         if (error) throw error;
-        
         if (data && data.length > 0) {
           setMemories(data.map(p => ({
             id: p.id,
@@ -82,12 +75,12 @@ export default function SphereViewer() {
         }
       } catch (err) {
         console.error('Supabase fetch failed', err);
+      } finally {
+        setPhotosLoading(false);
       }
     }
     load();
   }, [albumId]);
-
-  if (hasError) return <div className="text-white">System Error</div>;
 
   return (
     <div className="relative w-full h-screen bg-[#050505] overflow-hidden font-sans text-white">
@@ -189,6 +182,35 @@ export default function SphereViewer() {
           <div className="absolute bottom-3 left-3 text-[8px] uppercase tracking-widest text-[#00FF94] bg-black/50 px-2 py-1 rounded backdrop-blur-md">Local Processing</div>
         </div>
       </div>
+
+      {/* Photos loading / empty state overlays */}
+      <AnimatePresence>
+        {photosLoading && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="absolute inset-0 z-20 flex items-center justify-center bg-black/60 backdrop-blur-sm pointer-events-none"
+          >
+            <div className="flex flex-col items-center gap-4">
+              <Loader2 className="animate-spin text-[#00FF94] w-10 h-10" />
+              <span className="text-[10px] uppercase tracking-[0.3em] text-gray-400">Loading Memories</span>
+            </div>
+          </motion.div>
+        )}
+        {!photosLoading && memories.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none"
+          >
+            <div className="flex flex-col items-center gap-4 text-center">
+              <div className="w-16 h-16 rounded-full border border-white/10 flex items-center justify-center mb-2">
+                <Plus className="w-8 h-8 text-gray-600" />
+              </div>
+              <p className="text-[11px] uppercase tracking-[0.3em] text-gray-500">This sphere is empty</p>
+              <p className="text-[10px] text-gray-600 tracking-widest">Add photos from the dashboard to begin</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Camera Error Overlays */}
       <AnimatePresence>

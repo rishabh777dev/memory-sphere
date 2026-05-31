@@ -62,7 +62,13 @@ const _lerpScale = new THREE.Vector3();
 const _targetPos = new THREE.Vector3();
 
 // ---------- Sub-component ----------
-function MemoryItem({ memory, index, meshRefs }: any) {
+interface MemoryItemProps {
+  memory: Memory;
+  index: number;
+  meshRefs: React.MutableRefObject<(THREE.Mesh | null)[]>;
+}
+
+function MemoryItem({ memory, index, meshRefs }: MemoryItemProps) {
   const texture = useTexture(memory.url) as THREE.Texture;
   return (
     <mesh ref={(el) => (meshRefs.current[index] = el)}>

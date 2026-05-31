@@ -31,8 +31,20 @@ export default function Auth() {
         alert('Success! If you see a confirmation email, please verify it. Otherwise, you can now log in.');
         setIsLogin(true);
       }
-    } catch (err: any) {
-      setError(err.message || 'An error occurred during authentication.');
+    } catch (err: unknown) {
+      // Map Supabase errors to safe user-facing messages — never expose raw internals
+      const msg = err instanceof Error ? err.message : '';
+      if (msg.includes('Invalid login credentials')) {
+        setError('Incorrect email or password.');
+      } else if (msg.includes('Email not confirmed')) {
+        setError('Please verify your email before logging in.');
+      } else if (msg.includes('User already registered')) {
+        setError('An account with this email already exists.');
+      } else if (msg.includes('Password should be')) {
+        setError('Password must be at least 6 characters.');
+      } else {
+        setError('Authentication failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }

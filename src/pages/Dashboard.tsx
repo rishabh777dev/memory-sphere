@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Plus, ArrowRight, Loader2, Database, Pencil, Check, X } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { v4 as uuidv4 } from 'uuid';
 import * as FramerMotion from 'motion/react';
 import { SphereManageModal } from '../components/SphereManageModal';
+import type { User } from '@supabase/supabase-js';
 
 const { motion, AnimatePresence } = FramerMotion;
 
@@ -18,40 +19,34 @@ export default function Dashboard() {
   const [albums, setAlbums] = useState<Album[]>([]);
   const [loading, setLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
-  const [dbError, setDbError] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
   const [managingAlbum, setManagingAlbum] = useState<Album | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkUser = async () => {
+    // ProtectedRoute already guarantees a session exists before this renders.
+    // We just need to grab the user and load their albums.
+    const init = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        navigate('/auth');
-      } else {
+      if (session) {
         setUser(session.user);
         fetchAlbums(session.user.id);
       }
     };
-    checkUser();
-  }, [navigate]);
+    init();
+  }, []);
 
   const fetchAlbums = async (userId: string) => {
     try {
       const { data, error } = await supabase.from('albums').select('*').eq('user_id', userId).order('created_at', { ascending: false });
-      
       if (error) throw error;
       setAlbums(data || []);
     } catch (err) {
       console.error('Supabase fetch error:', err);
-      setDbError(true);
-      // Fallback for demo purposes if DB isn't connected yet
-      setAlbums([
-        { id: 'demo-1', name: 'Summer Vacation', created_at: new Date().toISOString() },
-        { id: 'demo-2', name: 'Design Inspiration', created_at: new Date().toISOString() }
-      ]);
+      // Show empty state — no fake demo data that could confuse users
+      setAlbums([]);
     } finally {
       setLoading(false);
     }
@@ -79,15 +74,13 @@ export default function Dashboard() {
     navigate('/auth');
   };
 
-  const saveAlbumName = async (e: React.MouseEvent, id: string) => {
+  const saveAlbumName = async (e: React.MouseEvent | React.KeyboardEvent, id: string) => {
     e.preventDefault();
     if (!editName.trim()) return setEditingId(null);
 
     try {
-      if (!dbError) {
-        const { error } = await supabase.from('albums').update({ name: editName }).eq('id', id);
-        if (error) throw error;
-      }
+      const { error } = await supabase.from('albums').update({ name: editName }).eq('id', id);
+      if (error) throw error;
       setAlbums(prev => prev.map(a => a.id === id ? { ...a, name: editName } : a));
     } catch (err) {
       console.error('Failed to rename album', err);
@@ -102,10 +95,10 @@ export default function Dashboard() {
   
   const itemVars = {
     hidden: { opacity: 0, y: 30 },
-    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100, damping: 20 } }
+    show: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 100, damping: 20 } }
   };
 
-  if (!user && loading) return <div className="min-h-screen bg-black" />; // Prevent flash of dashboard before redirect
+  if (loading) return <div className="min-h-screen bg-black" />;
 
   return (
     <div className="min-h-screen bg-[#050505] text-white font-sans p-10 md:p-20 relative overflow-hidden">
@@ -122,12 +115,6 @@ export default function Dashboard() {
           <button onClick={handleLogout} className="text-[10px] text-gray-400 hover:text-red-400 uppercase tracking-widest transition-colors font-bold">
             Log Out Session
           </button>
-          {dbError && (
-            <div className="flex items-center gap-2 text-yellow-500 text-[10px] uppercase tracking-widest bg-yellow-500/10 border border-yellow-500/20 px-4 py-2 rounded-full">
-              <Database size={12} />
-              <span>Supabase Disconnected: Local Mode</span>
-            </div>
-          )}
         </div>
       </header>
 

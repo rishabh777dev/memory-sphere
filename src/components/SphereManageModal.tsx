@@ -43,9 +43,28 @@ export function SphereManageModal({ albumId, albumName, onClose }: SphereManageM
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const files = Array.from(e.target.files);
+
+    // Validate file type and size before uploading
+    const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    const MAX_SIZE_MB = 10;
+    const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
+
+    const validFiles = files.filter(file => {
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        console.warn(`Skipped "${file.name}": unsupported file type (${file.type})`);
+        return false;
+      }
+      if (file.size > MAX_SIZE_BYTES) {
+        console.warn(`Skipped "${file.name}": exceeds ${MAX_SIZE_MB}MB limit`);
+        return false;
+      }
+      return true;
+    });
+
+    if (validFiles.length === 0) return;
     setUploading(true);
 
-    for (const file of files) {
+    for (const file of validFiles) {
       const fileExt = file.name.split('.').pop();
       const fileName = `${uuidv4()}.${fileExt}`;
       const filePath = `${albumId}/${fileName}`;
