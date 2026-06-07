@@ -6,12 +6,15 @@ export interface Album {
   name: string;
   created_at: string;
   user_id?: string;
+  is_public?: boolean;
 }
 
 export interface Photo {
   id: string;
   album_id: string;
   image_url: string;
+  title?: string;
+  description?: string;
   created_at?: string;
 }
 
@@ -27,11 +30,23 @@ export const albumService = {
     return data || [];
   },
 
+  async fetchPublicAlbum(id: string): Promise<Album> {
+    const { data, error } = await supabase
+      .from('albums')
+      .select('*')
+      .eq('id', id)
+      .eq('is_public', true)
+      .single();
+    
+    if (error) throw error;
+    return data;
+  },
+
   async createAlbum(userId: string, name: string): Promise<Album> {
     const id = uuidv4();
     const { data, error } = await supabase
       .from('albums')
-      .insert([{ id, name, user_id: userId }])
+      .insert([{ id, name, user_id: userId, is_public: false }])
       .select()
       .single();
     
@@ -39,17 +54,20 @@ export const albumService = {
     return data;
   },
 
-  async updateAlbumName(id: string, name: string): Promise<void> {
+  async updateAlbum(id: string, updates: Partial<Album>): Promise<void> {
     const { error } = await supabase
       .from('albums')
-      .update({ name })
+      .update(updates)
       .eq('id', id);
     
     if (error) throw error;
   },
 
+  async updateAlbumName(id: string, name: string): Promise<void> {
+    return this.updateAlbum(id, { name });
+  },
+
   async deleteAlbum(id: string): Promise<void> {
-    // Note: Photos should be deleted via cascading or manually if RLS/Triggers aren't set
     const { error } = await supabase
       .from('albums')
       .delete()
@@ -76,23 +94,21 @@ export const photoService = {
     const fileName = `${uuidv4()}.${fileExt}`;
     const filePath = `${albumId}/${fileName}`;
 
-    // 1. Upload to Storage
     const { error: uploadError } = await supabase.storage
       .from('memory-sphere-images')
       .upload(filePath, file);
     
     if (uploadError) throw uploadError;
 
-    // 2. Get Public URL
     const { data: { publicUrl } } = supabase.storage
       .from('memory-sphere-images')
       .getPublicUrl(filePath);
 
-    // 3. Insert into Database
     const newPhoto = {
       id: uuidv4(),
       album_id: albumId,
-      image_url: publicUrl
+      image_url: publicUrl,
+      title: file.name.split('.')[0]
     };
 
     const { data, error: insertError } = await supabase
@@ -103,6 +119,14 @@ export const photoService = {
     
     if (insertError) throw insertError;
     return data;
+  },
+
+  async updatePhotoMetadata(id: string, updates: Partial<Photo>): Promise<void> {
+    const { error } = await supabase
+      .from('photos')
+      .update(updates)
+      .eq('id', id);
+    if (error) throw error;
   },
 
   async deletePhoto(photoId: string, url: string): Promise<void> {

@@ -120,17 +120,35 @@ export function SphereManageModal({ albumId, albumName, onClose }: SphereManageM
 
                 {/* Photo Thumbnails */}
                 {photos.map(photo => (
-                  <div key={photo.id} className="relative aspect-square rounded-2xl overflow-hidden group border border-white/10 bg-black">
-                    <img src={photo.image_url} alt="Memory" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
+                  <div key={photo.id} className="relative aspect-square rounded-2xl overflow-hidden group border border-white/10 bg-black flex flex-col">
+                    <img src={photo.image_url} alt="Memory" className="w-full h-full object-cover opacity-80 group-hover:opacity-40 transition-all duration-500" />
                     
-                    {/* Delete Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
-                      <button 
-                        onClick={() => deletePhoto(photo.id, photo.image_url)}
-                        className="p-2 bg-red-500/80 hover:bg-red-500 text-white rounded-full backdrop-blur-md transform translate-y-4 group-hover:translate-y-0 transition-all"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                    {/* Metadata Edit Overlay */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity p-4 flex flex-col justify-between bg-black/60">
+                      <div className="space-y-2">
+                        <input 
+                          type="text" 
+                          placeholder="Title"
+                          defaultValue={photo.title}
+                          onBlur={(e) => photoService.updatePhotoMetadata(photo.id, { title: e.target.value })}
+                          className="w-full bg-white/10 border border-white/20 rounded-lg px-2 py-1 text-[10px] text-white outline-none focus:border-[#00FF94]/50"
+                        />
+                        <textarea 
+                          placeholder="Description"
+                          defaultValue={photo.description}
+                          onBlur={(e) => photoService.updatePhotoMetadata(photo.id, { description: e.target.value })}
+                          className="w-full bg-white/10 border border-white/20 rounded-lg px-2 py-1 text-[9px] text-gray-300 outline-none focus:border-[#00FF94]/50 h-12 resize-none"
+                        />
+                      </div>
+                      
+                      <div className="flex justify-center">
+                        <button 
+                          onClick={() => deletePhoto(photo.id, photo.image_url)}
+                          className="p-2 bg-red-500/80 hover:bg-red-500 text-white rounded-full backdrop-blur-md transition-all"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
