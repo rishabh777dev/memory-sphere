@@ -5,6 +5,7 @@ import * as FramerMotion from 'motion/react';
 import { SphereManageModal } from '../components/SphereManageModal';
 import { useAuth } from '../hooks/useAuth';
 import { albumService, type Album } from '../services/supabase';
+import { ThemeToggle } from '../components/ThemeToggle';
 
 const { motion } = FramerMotion;
 
@@ -93,7 +94,7 @@ export default function Dashboard() {
   if (loading) return <div className="min-h-screen bg-art-bg flex items-center justify-center"><Loader2 className="animate-spin text-art-accent w-10 h-10" /></div>;
 
   return (
-    <div className="min-h-screen bg-art-bg text-art-text font-sans p-6 sm:p-10 md:p-20 relative overflow-hidden">
+    <div className="min-h-screen bg-art-bg text-art-text font-sans p-6 sm:p-10 md:p-20 relative overflow-y-auto custom-scrollbar">
       
       {/* Background Decor */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-art-accent/10 blur-[120px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/3"></div>
@@ -104,12 +105,15 @@ export default function Dashboard() {
           <h1 className="text-3xl sm:text-4xl font-black uppercase tracking-[0.3em] text-art-text">Your Vault</h1>
           <p className="text-art-text-dim text-[10px] tracking-[0.2em] uppercase mt-2 font-bold">Manage your Spatial Spheres</p>
         </div>
-        <button 
-          onClick={handleLogout} 
-          className="px-6 py-3 rounded-full warm-glass text-[10px] text-art-text-dim hover:text-art-accent uppercase tracking-widest transition-all font-black shadow-sm"
-        >
-          Terminate Session
-        </button>
+        <div className="flex items-center gap-6">
+          <ThemeToggle />
+          <button 
+            onClick={handleLogout} 
+            className="px-6 py-3 rounded-full warm-glass text-[10px] text-art-text-dim hover:text-art-accent uppercase tracking-widest transition-all font-black shadow-sm"
+          >
+            Terminate Session
+          </button>
+        </div>
       </header>
 
       <motion.div variants={containerVars} initial="hidden" animate="show" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8 relative z-10">

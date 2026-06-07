@@ -51,7 +51,7 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-art-bg text-art-text flex items-center justify-center font-sans relative overflow-hidden p-6 sm:p-10">
+    <div className="min-h-screen bg-art-bg text-art-text flex items-center justify-center font-sans relative overflow-y-auto p-6 sm:p-10">
       {/* Background soft glow */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-art-accent/10 rounded-full blur-[100px] pointer-events-none -translate-y-1/4 translate-x-1/4"></div>
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-art-accent/5 rounded-full blur-[100px] pointer-events-none translate-y-1/4 -translate-x-1/4"></div>

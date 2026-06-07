@@ -1,12 +1,24 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { ScrollControls, Scroll, useScroll, Float, Text, MeshTransmissionMaterial, Environment } from '@react-three/drei';
+import { ScrollControls, Scroll, useScroll, Float, Text, MeshTransmissionMaterial, Environment, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import * as FramerMotion from 'motion/react';
-import { ArrowRight, MoveDown, Share2, MousePointer2, Camera } from 'lucide-react';
+import { ArrowRight, MoveDown, Share2, MousePointer2, Camera, Loader2 } from 'lucide-react';
+import { ThemeToggle } from '../components/ThemeToggle';
 
 const { motion } = FramerMotion;
+
+function CanvasLoader() {
+  return (
+    <Html center>
+      <div className="flex flex-col items-center gap-4">
+        <Loader2 className="animate-spin text-art-accent w-10 h-10" />
+        <span className="text-[10px] uppercase tracking-[0.3em] text-art-text-dim font-black">Initializing Scene</span>
+      </div>
+    </Html>
+  );
+}
 
 // --- 3D Scene Elements ---
 
@@ -105,11 +117,12 @@ export default function Landing() {
       <div className="absolute inset-0 pointer-events-none z-50 opacity-[0.02] mix-blend-multiply" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
 
       <Canvas camera={{ position: [0, 0, 10], fov: 45 }}>
-        <ScrollControls pages={4} damping={0.2}>
-          <Scene />
-          
-          <Scroll html>
-            <div className="w-screen">
+        <Suspense fallback={<CanvasLoader />}>
+          <ScrollControls pages={4} damping={0.2}>
+            <Scene />
+            
+            <Scroll html>
+              <div className="w-screen">
               
               {/* --- Hero Section --- */}
               <Section>
@@ -118,10 +131,11 @@ export default function Landing() {
                     <div className="w-2 h-2 bg-art-accent rounded-full shadow-[0_0_10px_rgba(217,119,87,0.5)]" />
                     Memory.Sphere
                   </div>
-                  <div className="hidden sm:flex gap-10 text-[9px] uppercase tracking-widest font-bold text-art-text-dim">
+                  <div className="hidden sm:flex gap-10 text-[9px] uppercase tracking-widest font-bold text-art-text-dim items-center">
                     <a href="#about" className="hover:text-art-accent transition-colors">Philosophy</a>
                     <a href="#tech" className="hover:text-art-accent transition-colors">Technology</a>
                     <Link to="/auth" className="text-art-text hover:text-art-accent transition-colors underline underline-offset-4">Vault Access</Link>
+                    <ThemeToggle />
                   </div>
                 </nav>
 
@@ -250,7 +264,8 @@ export default function Landing() {
             </div>
           </Scroll>
         </ScrollControls>
-      </Canvas>
+      </Suspense>
+    </Canvas>
 
     </div>
   );

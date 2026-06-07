@@ -1,21 +1,43 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&family=JetBrains+Mono&display=swap');
 @import "tailwindcss";
 
+@layer base {
+  :root {
+    --art-bg: #FDFBF7;
+    --art-accent: #D97757;
+    --art-text: #2A2A2A;
+    --art-text-dim: #5A5A5A;
+    --art-line: rgba(42, 42, 42, 0.1);
+    --art-glass-bg: rgba(255, 255, 255, 0.4);
+    --art-glass-border: rgba(255, 255, 255, 0.6);
+  }
+
+  .dark {
+    --art-bg: #0A0A0A;
+    --art-accent: #E69A6B;
+    --art-text: #F3EFEA;
+    --art-text-dim: #A0A0A0;
+    --art-line: rgba(255, 255, 255, 0.1);
+    --art-glass-bg: rgba(0, 0, 0, 0.4);
+    --art-glass-border: rgba(255, 255, 255, 0.1);
+  }
+}
+
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
   
-  --color-art-bg: #FDFBF7;
-  --color-art-accent: #D97757;
-  --color-art-text: #2A2A2A;
-  --color-art-text-dim: #5A5A5A;
-  --color-art-line: rgba(42, 42, 42, 0.1);
-  --color-art-glass-bg: rgba(255, 255, 255, 0.4);
-  --color-art-glass-border: rgba(255, 255, 255, 0.6);
+  --color-art-bg: var(--art-bg);
+  --color-art-accent: var(--art-accent);
+  --color-art-text: var(--art-text);
+  --color-art-text-dim: var(--art-text-dim);
+  --color-art-line: var(--art-line);
+  --color-art-glass-bg: var(--art-glass-bg);
+  --color-art-glass-border: var(--art-glass-border);
 }
 
 body {
-  @apply bg-art-bg text-art-text overflow-hidden;
+  @apply bg-art-bg text-art-text overflow-hidden transition-colors duration-500;
   font-family: var(--font-sans);
 }
 

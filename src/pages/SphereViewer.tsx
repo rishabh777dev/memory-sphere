@@ -4,6 +4,7 @@ import { Canvas } from '@react-three/fiber';
 import { PerspectiveCamera, useProgress } from '@react-three/drei';
 import * as FramerMotion from 'motion/react';
 import { Camera, Loader2, ArrowLeft, Plus, RotateCcw, Share2, Info, Check, X, Globe, Lock } from 'lucide-react';
+import { ThemeToggle } from '../components/ThemeToggle';
 
 import { useHandTracking } from '../hooks/useHandTracking';
 import { MemorySphere } from '../components/MemorySphere';
@@ -152,13 +153,16 @@ export default function SphereViewer() {
       </div>
 
       <div className="absolute top-6 right-6 sm:top-10 sm:right-10 z-10 flex flex-col items-end gap-3 pointer-events-none">
-        <button 
-          onClick={() => setIsShareModalOpen(true)}
-          className="pointer-events-auto flex items-center gap-3 px-6 py-3 warm-glass rounded-full shadow-sm text-[9px] uppercase tracking-widest font-black text-art-text-dim hover:text-art-accent transition-all"
-        >
-          <Share2 size={12} />
-          <span className="hidden sm:inline">Share Sphere</span>
-        </button>
+        <div className="flex gap-3 pointer-events-auto">
+          <ThemeToggle />
+          <button 
+            onClick={() => setIsShareModalOpen(true)}
+            className="flex items-center gap-3 px-6 py-3 warm-glass rounded-full shadow-sm text-[9px] uppercase tracking-widest font-black text-art-text-dim hover:text-art-accent transition-all"
+          >
+            <Share2 size={12} />
+            <span className="hidden sm:inline">Share Sphere</span>
+          </button>
+        </div>
         
         <div className="flex items-center gap-3 px-6 py-3 warm-glass rounded-full shadow-sm text-[9px] uppercase tracking-widest font-black">
           <div className={`w-2 h-2 rounded-full ${!cameraStarted ? 'bg-gray-300' : isCameraDenied ? 'bg-red-400 shadow-[0_0_10px_rgba(248,113,113,0.4)]' : 'bg-art-accent shadow-[0_0_10px_rgba(217,119,87,0.4)]'}`}></div>
