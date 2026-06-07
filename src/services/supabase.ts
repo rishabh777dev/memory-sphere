@@ -30,6 +30,17 @@ export const albumService = {
     return data || [];
   },
 
+  async fetchAlbum(id: string): Promise<Album> {
+    const { data, error } = await supabase
+      .from('albums')
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) throw error;
+    return data;
+  },
+
   async fetchPublicAlbum(id: string): Promise<Album> {
     const { data, error } = await supabase
       .from('albums')

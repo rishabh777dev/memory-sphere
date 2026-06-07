@@ -12,7 +12,8 @@ import { photoService, albumService, type Photo, type Album } from '../services/
 const { motion, AnimatePresence } = FramerMotion;
 
 function Loader() {
-  const { progress } = useProgress();
+  const { progress, active } = useProgress();
+  if (!active) return null;
   return (
     <Html center>
       <div className="flex flex-col items-center gap-4 bg-black/60 backdrop-blur-xl p-8 rounded-3xl border border-white/10 shadow-2xl">
@@ -78,7 +79,7 @@ export default function SphereViewer() {
       try {
         const [photoData, albumData] = await Promise.all([
           photoService.fetchPhotos(albumId),
-          supabase.from('albums').select('*').eq('id', albumId).single().then(r => r.data)
+          albumService.fetchAlbum(albumId)
         ]);
         setPhotos(photoData);
         setAlbum(albumData);
@@ -113,6 +114,7 @@ export default function SphereViewer() {
       setAlbum({ ...album, is_public: !album.is_public });
     } catch (err) {
       console.error('Share toggle failed', err);
+      alert('Failed to update sharing settings. Please ensure your Supabase "albums" table has an "is_public" boolean column.');
     }
   };
 
@@ -279,5 +281,3 @@ export default function SphereViewer() {
     </div>
   );
 }
-
-import { supabase } from '../lib/supabase';
