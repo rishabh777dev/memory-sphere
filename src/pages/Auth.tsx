@@ -51,33 +51,34 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center font-sans relative overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-art-accent/5 rounded-full blur-[150px] pointer-events-none"></div>
+    <div className="min-h-screen bg-art-bg text-art-text flex items-center justify-center font-sans relative overflow-hidden p-6 sm:p-10">
+      {/* Background soft glow */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-art-accent/10 rounded-full blur-[100px] pointer-events-none -translate-y-1/4 translate-x-1/4"></div>
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-art-accent/5 rounded-full blur-[100px] pointer-events-none translate-y-1/4 -translate-x-1/4"></div>
 
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md p-10 bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl relative z-10"
+        className="w-full max-w-md p-8 sm:p-12 warm-glass rounded-[2.5rem] relative z-10"
       >
         <div className="text-center mb-10">
-          <h1 className="text-2xl font-black uppercase tracking-[0.3em] mb-2">
+          <h1 className="text-2xl font-black uppercase tracking-[0.3em] mb-3 text-art-text">
             {isLogin ? 'Enter Vault' : 'Initialize Account'}
           </h1>
-          <p className="text-[10px] text-art-text-dim uppercase tracking-widest">
+          <p className="text-[10px] text-art-text-dim uppercase tracking-widest leading-relaxed">
             {isLogin ? 'Authenticate to access your memory spheres' : 'Create a secure spatial container'}
           </p>
         </div>
 
         <form onSubmit={handleAuth} className="space-y-6">
           {error && (
-            <div className="p-4 bg-red-500/10 border border-red-500/30 text-red-400 text-xs text-center">
+            <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-600 text-[10px] uppercase font-bold tracking-widest text-center rounded-xl">
               {error}
             </div>
           )}
 
           <div className="space-y-2">
-            <label className="text-[9px] uppercase tracking-[0.2em] text-art-text-dim">Email Classification</label>
+            <label className="text-[9px] uppercase tracking-[0.2em] text-art-text-dim font-black ml-1">Email Classification</label>
             <div className="relative">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-art-text-dim" />
               <input 
@@ -85,14 +86,14 @@ export default function Auth() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-black/50 border border-art-line focus:border-art-accent p-4 pl-12 text-sm outline-none transition-colors"
+                className="w-full bg-white/50 border border-art-line focus:border-art-accent p-4 pl-12 text-sm outline-none transition-all rounded-2xl placeholder:text-art-text-dim/30"
                 placeholder="user@system.net"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-[9px] uppercase tracking-[0.2em] text-art-text-dim">Security Key</label>
+            <label className="text-[9px] uppercase tracking-[0.2em] text-art-text-dim font-black ml-1">Security Key</label>
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-art-text-dim" />
               <input 
@@ -100,7 +101,7 @@ export default function Auth() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-black/50 border border-art-line focus:border-art-accent p-4 pl-12 text-sm outline-none transition-colors"
+                className="w-full bg-white/50 border border-art-line focus:border-art-accent p-4 pl-12 text-sm outline-none transition-all rounded-2xl placeholder:text-art-text-dim/30"
                 placeholder="••••••••"
               />
             </div>
@@ -109,7 +110,7 @@ export default function Auth() {
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full py-4 bg-art-accent text-black text-[11px] font-black uppercase tracking-[0.3em] hover:bg-white transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full py-5 bg-art-text text-art-bg text-[11px] font-black uppercase tracking-[0.3em] hover:bg-art-accent hover:text-white transition-all disabled:opacity-50 flex items-center justify-center gap-2 rounded-2xl shadow-xl shadow-art-text/10"
           >
             {loading ? <Loader2 className="animate-spin w-4 h-4" /> : (isLogin ? 'Authenticate' : 'Create Account')}
           </button>
@@ -118,9 +119,9 @@ export default function Auth() {
         <div className="mt-8 text-center">
           <button 
             onClick={() => setIsLogin(!isLogin)}
-            className="text-[10px] text-art-text-dim hover:text-white uppercase tracking-widest transition-colors"
+            className="text-[10px] text-art-text-dim hover:text-art-accent uppercase tracking-widest transition-colors font-bold"
           >
-            {isLogin ? 'Request New Clearance (Sign Up)' : 'Existing Agent? (Log In)'}
+            {isLogin ? 'Request New Clearance' : 'Existing Agent?'}
           </button>
         </div>
       </motion.div>

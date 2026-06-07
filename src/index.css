@@ -5,11 +5,13 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
   
-  --color-art-bg: #080808;
-  --color-art-accent: #00FF94;
-  --color-art-text: #F0F0F0;
-  --color-art-text-dim: #707070;
-  --color-art-line: rgba(255, 255, 255, 0.1);
+  --color-art-bg: #FDFBF7;
+  --color-art-accent: #D97757;
+  --color-art-text: #2A2A2A;
+  --color-art-text-dim: #5A5A5A;
+  --color-art-line: rgba(42, 42, 42, 0.1);
+  --color-art-glass-bg: rgba(255, 255, 255, 0.4);
+  --color-art-glass-border: rgba(255, 255, 255, 0.6);
 }
 
 body {
@@ -24,7 +26,7 @@ body {
 
 .dot-accent {
   @apply w-1.5 h-1.5 bg-art-accent rounded-full;
-  box-shadow: 0 0 10px #00FF94;
+  box-shadow: 0 0 10px rgba(217, 119, 87, 0.4);
 }
 
 .art-border {
@@ -32,5 +34,20 @@ body {
 }
 
 .art-glass {
-  @apply bg-white/[0.03] backdrop-blur-xl border border-white/20;
+  @apply bg-art-glass-bg backdrop-blur-xl border border-art-glass-border shadow-sm;
+}
+
+.warm-glass {
+  @apply bg-white/40 backdrop-blur-xl border border-white/60 shadow-sm;
+}
+
+/* Custom Scrollbar for warm theme */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-art-accent/20 rounded-full hover:bg-art-accent/40 transition-colors;
 }

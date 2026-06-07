@@ -90,34 +90,36 @@ export default function Dashboard() {
     show: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 100, damping: 20 } }
   };
 
-  if (loading) return <div className="min-h-screen bg-black flex items-center justify-center"><Loader2 className="animate-spin text-[#00FF94] w-10 h-10" /></div>;
+  if (loading) return <div className="min-h-screen bg-art-bg flex items-center justify-center"><Loader2 className="animate-spin text-art-accent w-10 h-10" /></div>;
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white font-sans p-10 md:p-20 relative overflow-hidden">
+    <div className="min-h-screen bg-art-bg text-art-text font-sans p-6 sm:p-10 md:p-20 relative overflow-hidden">
       
       {/* Background Decor */}
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#00FF94]/5 blur-[120px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/3"></div>
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-art-accent/10 blur-[120px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/3"></div>
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-art-accent/5 blur-[100px] rounded-full pointer-events-none translate-y-1/2 -translate-x-1/4"></div>
 
-      <header className="mb-20 flex justify-between items-end border-b border-white/10 pb-6 relative z-10">
+      <header className="mb-12 sm:mb-20 flex flex-col sm:flex-row justify-between items-start sm:items-end border-b border-art-line pb-8 relative z-10 gap-6">
         <div>
-          <h1 className="text-4xl font-black uppercase tracking-[0.3em] text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">Your Vault</h1>
-          <p className="text-gray-400 text-xs tracking-[0.2em] uppercase mt-2">Manage your Spatial Spheres</p>
+          <h1 className="text-3xl sm:text-4xl font-black uppercase tracking-[0.3em] text-art-text">Your Vault</h1>
+          <p className="text-art-text-dim text-[10px] tracking-[0.2em] uppercase mt-2 font-bold">Manage your Spatial Spheres</p>
         </div>
-        <div className="flex flex-col items-end gap-3">
-          <button onClick={handleLogout} className="text-[10px] text-gray-400 hover:text-red-400 uppercase tracking-widest transition-colors font-bold">
-            Log Out Session
-          </button>
-        </div>
+        <button 
+          onClick={handleLogout} 
+          className="px-6 py-3 rounded-full warm-glass text-[10px] text-art-text-dim hover:text-art-accent uppercase tracking-widest transition-all font-black shadow-sm"
+        >
+          Terminate Session
+        </button>
       </header>
 
-      <motion.div variants={containerVars} initial="hidden" animate="show" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 relative z-10">
+      <motion.div variants={containerVars} initial="hidden" animate="show" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8 relative z-10">
         
         {/* Create New Card */}
         <motion.button 
           variants={itemVars}
           onClick={createNewSphere}
           disabled={isCreating}
-          className="group flex flex-col items-center justify-center h-72 rounded-3xl border border-dashed border-white/20 bg-white/5 backdrop-blur-xl hover:border-[#00FF94]/50 hover:bg-[#00FF94]/5 transition-all text-gray-400 hover:text-[#00FF94]"
+          className="group flex flex-col items-center justify-center h-64 sm:h-72 rounded-[2.5rem] border-2 border-dashed border-art-line bg-white/20 hover:border-art-accent/50 hover:bg-white/40 transition-all text-art-text-dim hover:text-art-accent"
         >
           {isCreating ? (
             <Loader2 className="w-10 h-10 animate-spin" />
@@ -134,20 +136,18 @@ export default function Dashboard() {
           <motion.div variants={itemVars} key={album.id}>
             <div 
               onClick={() => setManagingAlbum(album)}
-              className="group relative h-72 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 p-8 flex flex-col justify-between hover:border-[#00FF94]/30 hover:shadow-[0_0_30px_rgba(0,255,148,0.1)] transition-all overflow-hidden cursor-pointer"
+              className="group relative h-64 sm:h-72 rounded-[2.5rem] warm-glass p-8 flex flex-col justify-between hover:border-art-accent/30 hover:shadow-xl hover:shadow-art-accent/5 transition-all overflow-hidden cursor-pointer"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-[#00FF94]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              
               <div className="z-10 relative">
                 <div className="flex justify-between items-start mb-6">
-                  <div className="w-10 h-10 rounded-full bg-black/50 border border-white/10 flex items-center justify-center text-gray-300 group-hover:border-[#00FF94]/50 group-hover:text-[#00FF94] transition-colors">
-                    <Database size={16} />
+                  <div className="w-12 h-12 rounded-2xl bg-white/50 border border-art-line flex items-center justify-center text-art-text-dim group-hover:border-art-accent/50 group-hover:text-art-accent transition-colors shadow-sm">
+                    <Database size={18} />
                   </div>
                   <button 
                     onClick={(e) => deleteAlbum(e, album.id)}
-                    className="text-gray-500 hover:text-red-400 p-2 rounded-full hover:bg-white/10 transition-colors opacity-0 group-hover:opacity-100"
+                    className="text-art-text-dim/40 hover:text-red-500 p-2 rounded-full hover:bg-red-50/50 transition-colors opacity-0 group-hover:opacity-100"
                   >
-                    <Trash2 size={14} />
+                    <Trash2 size={16} />
                   </button>
                 </div>
 
@@ -157,7 +157,7 @@ export default function Dashboard() {
                       type="text" 
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
-                      className="bg-black/50 border border-[#00FF94] text-white px-3 py-2 rounded text-lg font-bold outline-none w-full"
+                      className="bg-white/80 border border-art-accent/30 text-art-text px-4 py-2 rounded-xl text-lg font-bold outline-none w-full shadow-inner"
                       autoFocus
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') saveAlbumName(e as any, album.id);
@@ -165,16 +165,16 @@ export default function Dashboard() {
                       }}
                     />
                     <div className="flex gap-2 mt-2">
-                      <button onClick={(e) => saveAlbumName(e, album.id)} className="p-1.5 bg-[#00FF94]/20 text-[#00FF94] rounded hover:bg-[#00FF94]/40 transition-colors"><Check size={14} /></button>
-                      <button onClick={() => setEditingId(null)} className="p-1.5 bg-red-500/20 text-red-400 rounded hover:bg-red-500/40 transition-colors"><X size={14} /></button>
+                      <button onClick={(e) => saveAlbumName(e, album.id)} className="p-2 bg-art-accent text-white rounded-lg hover:bg-art-accent/80 transition-colors shadow-sm"><Check size={14} /></button>
+                      <button onClick={() => setEditingId(null)} className="p-2 bg-white border border-art-line text-art-text-dim rounded-lg hover:bg-gray-50 transition-colors shadow-sm"><X size={14} /></button>
                     </div>
                   </div>
                 ) : (
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="text-xl font-bold tracking-wide text-white group-hover:text-[#00FF94] transition-colors line-clamp-2">{album.name}</h3>
-                      <p className="text-[9px] text-gray-500 uppercase tracking-widest mt-2">
-                        Created: {new Date(album.created_at).toLocaleDateString()}
+                      <h3 className="text-xl font-black tracking-tight text-art-text group-hover:text-art-accent transition-colors line-clamp-2">{album.name}</h3>
+                      <p className="text-[9px] text-art-text-dim uppercase tracking-[0.2em] mt-3 font-bold opacity-60">
+                        {new Date(album.created_at).toLocaleDateString()}
                       </p>
                     </div>
                     <button 
@@ -183,7 +183,7 @@ export default function Dashboard() {
                         setEditName(album.name);
                         setEditingId(album.id);
                       }}
-                      className="text-gray-500 hover:text-white p-2 rounded-full hover:bg-white/10 transition-colors opacity-0 group-hover:opacity-100"
+                      className="text-art-text-dim/30 hover:text-art-text p-2 rounded-full hover:bg-white/50 transition-colors opacity-0 group-hover:opacity-100"
                     >
                       <Pencil size={14} />
                     </button>
@@ -191,8 +191,8 @@ export default function Dashboard() {
                 )}
               </div>
 
-              <div className="z-10 relative flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-black text-gray-500 group-hover:text-white transition-colors">
-                Manage Sphere <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform text-[#00FF94]" />
+              <div className="z-10 relative flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] font-black text-art-text-dim group-hover:text-art-text transition-colors">
+                Open Space <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform text-art-accent" />
               </div>
             </div>
           </motion.div>

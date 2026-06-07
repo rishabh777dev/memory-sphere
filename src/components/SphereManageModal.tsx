@@ -77,76 +77,76 @@ export function SphereManageModal({ albumId, albumName, onClose }: SphereManageM
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-10 bg-black/80 backdrop-blur-sm"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 bg-art-text/20 backdrop-blur-sm"
       >
         <motion.div 
           initial={{ scale: 0.95, y: 20 }}
           animate={{ scale: 1, y: 0 }}
           exit={{ scale: 0.95, y: 20 }}
-          className="relative w-full max-w-5xl h-[85vh] bg-[#0A0A0A] border border-white/10 rounded-3xl overflow-hidden flex flex-col shadow-2xl"
+          className="relative w-full max-w-5xl h-[90vh] md:h-[85vh] bg-art-bg border border-art-line rounded-[2.5rem] overflow-hidden flex flex-col shadow-2xl"
         >
           {/* Header */}
-          <div className="flex justify-between items-center p-8 border-b border-white/10 bg-white/5">
+          <div className="flex justify-between items-center p-6 md:p-8 border-b border-art-line bg-white/30 backdrop-blur-md">
             <div>
-              <h2 className="text-2xl font-black uppercase tracking-[0.2em] text-white">Manage Sphere</h2>
-              <p className="text-gray-400 text-xs tracking-widest mt-1">{albumName}</p>
+              <h2 className="text-xl md:text-2xl font-black uppercase tracking-[0.2em] text-art-text">Manage Sphere</h2>
+              <p className="text-art-text-dim text-[10px] tracking-widest mt-1 font-bold">{albumName}</p>
             </div>
-            <button onClick={onClose} className="p-2 text-gray-500 hover:text-white bg-black/50 hover:bg-red-500/20 rounded-full transition-colors">
+            <button onClick={onClose} className="p-3 text-art-text-dim hover:text-art-text hover:bg-white/50 rounded-full transition-all">
               <X size={20} />
             </button>
           </div>
 
           {/* Content Area */}
-          <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+          <div className="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar">
             {loading ? (
               <div className="flex justify-center items-center h-64">
-                <Loader2 className="w-10 h-10 animate-spin text-[#00FF94]" />
+                <Loader2 className="w-10 h-10 animate-spin text-art-accent" />
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
                 
                 {/* Upload Card */}
-                <label className="relative aspect-square flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-white/20 bg-white/5 hover:bg-[#00FF94]/10 hover:border-[#00FF94]/50 cursor-pointer transition-all group overflow-hidden">
+                <label className="relative aspect-square flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-art-line bg-white/20 hover:bg-white/40 hover:border-art-accent/50 cursor-pointer transition-all group overflow-hidden shadow-sm">
                   <input type="file" multiple accept="image/*" className="hidden" onChange={handleFileUpload} disabled={uploading} />
                   {uploading ? (
-                    <Loader2 className="w-8 h-8 animate-spin text-[#00FF94]" />
+                    <Loader2 className="w-8 h-8 animate-spin text-art-accent" />
                   ) : (
                     <>
-                      <Upload className="w-8 h-8 text-gray-400 group-hover:text-[#00FF94] mb-3 transition-colors" />
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 group-hover:text-[#00FF94]">Add Photos</span>
+                      <Upload className="w-8 h-8 text-art-text-dim group-hover:text-art-accent mb-3 transition-colors" />
+                      <span className="text-[9px] font-black uppercase tracking-widest text-art-text-dim group-hover:text-art-accent">Add Photos</span>
                     </>
                   )}
                 </label>
 
                 {/* Photo Thumbnails */}
                 {photos.map(photo => (
-                  <div key={photo.id} className="relative aspect-square rounded-2xl overflow-hidden group border border-white/10 bg-black flex flex-col">
-                    <img src={photo.image_url} alt="Memory" className="w-full h-full object-cover opacity-80 group-hover:opacity-40 transition-all duration-500" />
+                  <div key={photo.id} className="relative aspect-square rounded-3xl overflow-hidden group border border-art-line bg-white shadow-sm flex flex-col">
+                    <img src={photo.image_url} alt="Memory" className="w-full h-full object-cover opacity-90 group-hover:opacity-30 transition-all duration-500" />
                     
                     {/* Metadata Edit Overlay */}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity p-4 flex flex-col justify-between bg-black/60">
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all p-4 flex flex-col justify-between bg-white/60 backdrop-blur-sm">
                       <div className="space-y-2">
                         <input 
                           type="text" 
                           placeholder="Title"
                           defaultValue={photo.title}
                           onBlur={(e) => photoService.updatePhotoMetadata(photo.id, { title: e.target.value })}
-                          className="w-full bg-white/10 border border-white/20 rounded-lg px-2 py-1 text-[10px] text-white outline-none focus:border-[#00FF94]/50"
+                          className="w-full bg-white/80 border border-art-line rounded-xl px-3 py-1.5 text-[10px] text-art-text outline-none focus:border-art-accent transition-all shadow-sm"
                         />
                         <textarea 
                           placeholder="Description"
                           defaultValue={photo.description}
                           onBlur={(e) => photoService.updatePhotoMetadata(photo.id, { description: e.target.value })}
-                          className="w-full bg-white/10 border border-white/20 rounded-lg px-2 py-1 text-[9px] text-gray-300 outline-none focus:border-[#00FF94]/50 h-12 resize-none"
+                          className="w-full bg-white/80 border border-art-line rounded-xl px-3 py-1.5 text-[9px] text-art-text-dim outline-none focus:border-art-accent transition-all h-16 resize-none shadow-sm"
                         />
                       </div>
                       
                       <div className="flex justify-center">
                         <button 
                           onClick={() => deletePhoto(photo.id, photo.image_url)}
-                          className="p-2 bg-red-500/80 hover:bg-red-500 text-white rounded-full backdrop-blur-md transition-all"
+                          className="p-3 bg-red-50 text-red-500 hover:bg-red-500 hover:text-white rounded-full transition-all shadow-sm"
                         >
-                          <Trash2 size={14} />
+                          <Trash2 size={16} />
                         </button>
                       </div>
                     </div>
@@ -156,17 +156,20 @@ export function SphereManageModal({ albumId, albumName, onClose }: SphereManageM
             )}
             
             {!loading && photos.length === 0 && (
-              <div className="text-center mt-12 text-gray-500 text-sm tracking-widest uppercase">
-                No memories found in this sphere. Upload some photos to begin.
+              <div className="text-center mt-20 text-art-text-dim text-[10px] tracking-[0.3em] uppercase font-black opacity-40">
+                Empty Sphere Registry
               </div>
             )}
           </div>
 
           {/* Footer Action */}
-          <div className="p-6 border-t border-white/10 bg-white/5 flex justify-end">
+          <div className="p-6 md:p-8 border-t border-art-line bg-white/30 backdrop-blur-md flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div className="text-[9px] uppercase tracking-[0.3em] text-art-text-dim font-black hidden sm:block">
+              {photos.length} Total Nodes Synchronized
+            </div>
             <button 
               onClick={() => navigate(`/sphere/${albumId}`)}
-              className="flex items-center gap-3 px-8 py-4 bg-[#00FF94] text-black rounded-full font-black uppercase tracking-[0.2em] hover:bg-white transition-colors"
+              className="w-full sm:w-auto flex items-center justify-center gap-4 px-10 py-5 bg-art-text text-art-bg rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-art-accent hover:text-white transition-all shadow-xl shadow-art-text/10"
             >
               Enter Spatial Sphere <ArrowRight size={18} />
             </button>
