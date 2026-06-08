@@ -1,14 +1,15 @@
 import { useState, useRef, useEffect, Suspense, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Canvas } from '@react-three/fiber';
-import { PerspectiveCamera, useProgress } from '@react-three/drei';
+import { PerspectiveCamera, useProgress, Html } from '@react-three/drei';
 import * as FramerMotion from 'motion/react';
-import { Camera, Loader2, ArrowLeft, Plus, RotateCcw, Share2, Info, Check, X, Globe, Lock } from 'lucide-react';
-import { ThemeToggle } from '../components/ThemeToggle';
+import { Camera, Loader2, ArrowLeft, RotateCcw, Share2, Globe, Lock, X } from 'lucide-react';
 
 import { useHandTracking } from '../hooks/useHandTracking';
 import { MemorySphere } from '../components/MemorySphere';
 import { photoService, albumService, type Photo, type Album } from '../services/supabase';
+import { ThemeToggle } from '../components/ThemeToggle';
+import { useTheme } from '../hooks/useTheme';
 
 const { motion, AnimatePresence } = FramerMotion;
 
@@ -17,12 +18,12 @@ function Loader() {
   if (!active) return null;
   return (
     <Html center>
-      <div className="flex flex-col items-center gap-4 bg-black/60 backdrop-blur-xl p-8 rounded-3xl border border-white/10 shadow-2xl">
+      <div className="flex flex-col items-center gap-4 bg-art-bg/80 backdrop-blur-xl p-8 rounded-3xl border border-art-line shadow-2xl">
         <div className="relative w-20 h-20">
           <svg className="w-full h-full" viewBox="0 0 100 100">
-            <circle className="text-white/10" strokeWidth="8" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50" />
+            <circle className="text-art-text-dim/10" strokeWidth="8" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50" />
             <circle 
-              className="text-[#00FF94] transition-all duration-500" 
+              className="text-art-accent transition-all duration-500" 
               strokeWidth="8" 
               strokeDasharray={251.2} 
               strokeDashoffset={251.2 - (251.2 * progress) / 100} 
@@ -32,20 +33,18 @@ function Loader() {
               r="40" cx="50" cy="50" 
             />
           </svg>
-          <div className="absolute inset-0 flex items-center justify-center text-[10px] font-black text-white">{Math.round(progress)}%</div>
+          <div className="absolute inset-0 flex items-center justify-center text-[10px] font-black text-art-text">{Math.round(progress)}%</div>
         </div>
-        <span className="text-[10px] uppercase tracking-[0.3em] text-[#00FF94] font-black">Spatial Loading</span>
+        <span className="text-[10px] uppercase tracking-[0.3em] text-art-accent font-black">Spatial Loading</span>
       </div>
     </Html>
   );
 }
 
-// Internal Html import fix for SphereViewer
-import { Html } from '@react-three/drei';
-
 export default function SphereViewer() {
   const { id: albumId } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { theme } = useTheme();
   
   const [photosLoading, setPhotosLoading] = useState(true);
   const [photos, setPhotos] = useState<Photo[]>([]);
@@ -86,7 +85,6 @@ export default function SphereViewer() {
         setAlbum(albumData);
       } catch (err) {
         console.error('Fetch failed', err);
-        // Try public fetch if auth fetch fails
         try {
           const publicAlbum = await albumService.fetchPublicAlbum(albumId);
           const publicPhotos = await photoService.fetchPhotos(albumId);
@@ -120,19 +118,18 @@ export default function SphereViewer() {
   };
 
   const copyShareLink = () => {
-    const url = window.location.href;
-    navigator.clipboard.writeText(url);
-    alert('Share link copied to clipboard!');
+    navigator.clipboard.writeText(window.location.href);
+    alert('Public link copied to clipboard.');
   };
 
   return (
-    <div className="relative w-full h-screen bg-art-bg overflow-hidden font-sans text-art-text selection:bg-art-accent selection:text-white">
+    <div className="relative w-full h-screen bg-art-bg overflow-hidden font-sans text-art-text selection:bg-art-accent selection:text-white transition-colors duration-500">
       
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,#fff_0%,#F3EFEA_100%)]">
+      <div className="absolute inset-0 z-0 opacity-60 md:opacity-100" style={{ background: theme === 'light' ? 'radial-gradient(circle_at_center,#fff_0%,#F3EFEA_100%)' : 'radial-gradient(circle_at_center,#1a1a1a_0%,#000_100%)' }}>
         <Suspense fallback={null}>
           <Canvas gl={{ antialias: false }}>
             <PerspectiveCamera makeDefault position={[0, 0, 0.1]} fov={75} near={0.01} far={1000} />
-            <ambientLight intensity={1.2} />
+            <ambientLight intensity={theme === 'light' ? 1.2 : 0.6} />
             <pointLight position={[5, 5, 5]} intensity={1.5} />
             <MemorySphere memories={memories} resultsRef={resultsRef} sensitivity={sensitivity} onGestureMode={setGestureMode} invertControls={invertControls} />
             <Loader />
@@ -145,15 +142,15 @@ export default function SphereViewer() {
           onClick={() => navigate('/dashboard')} 
           className="pointer-events-auto flex items-center gap-3 px-6 py-3 warm-glass rounded-full text-[10px] uppercase tracking-[0.3em] text-art-text-dim hover:text-art-accent hover:scale-105 transition-all font-black shadow-sm"
         >
-          <ArrowLeft size={14} /> Vault
+          <ArrowLeft size={14} /> <span className="hidden sm:inline">Vault</span>
         </button>
-        <div className="text-xl sm:text-2xl font-black tracking-[0.2em] uppercase leading-tight text-art-text/80 hidden sm:block">
+        <div className="text-xl sm:text-2xl font-black tracking-[0.2em] uppercase leading-tight text-art-text/80 hidden lg:block max-w-[200px] truncate">
           {album?.name || 'Spatial memories'}
         </div>
       </div>
 
       <div className="absolute top-6 right-6 sm:top-10 sm:right-10 z-10 flex flex-col items-end gap-3 pointer-events-none">
-        <div className="flex gap-3 pointer-events-auto">
+        <div className="flex gap-3 pointer-events-auto items-center">
           <ThemeToggle />
           <button 
             onClick={() => setIsShareModalOpen(true)}
@@ -165,7 +162,7 @@ export default function SphereViewer() {
         </div>
         
         <div className="flex items-center gap-3 px-6 py-3 warm-glass rounded-full shadow-sm text-[9px] uppercase tracking-widest font-black">
-          <div className={`w-2 h-2 rounded-full ${!cameraStarted ? 'bg-gray-300' : isCameraDenied ? 'bg-red-400 shadow-[0_0_10px_rgba(248,113,113,0.4)]' : 'bg-art-accent shadow-[0_0_10px_rgba(217,119,87,0.4)]'}`}></div>
+          <div className={`w-2 h-2 rounded-full ${!cameraStarted ? 'bg-gray-300' : isCameraDenied ? 'bg-red-400 shadow-[0_0_10px_rgba(248,113,113,0.4)]' : 'bg-art-accent shadow-[0_0_10px_var(--art-accent)]'}`}></div>
           <span className={!cameraStarted ? 'text-art-text-dim/40' : isCameraDenied ? 'text-red-500' : 'text-art-accent'}>
             {cameraStarted ? (isCameraDenied ? 'Blocked' : 'Active') : 'Standby'}
           </span>

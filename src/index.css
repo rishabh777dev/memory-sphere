@@ -37,7 +37,7 @@
 }
 
 body {
-  @apply bg-art-bg text-art-text overflow-hidden transition-colors duration-500;
+  @apply bg-art-bg text-art-text transition-colors duration-500;
   font-family: var(--font-sans);
 }
 
@@ -48,7 +48,7 @@ body {
 
 .dot-accent {
   @apply w-1.5 h-1.5 bg-art-accent rounded-full;
-  box-shadow: 0 0 10px rgba(217, 119, 87, 0.4);
+  box-shadow: 0 0 10px var(--art-accent);
 }
 
 .art-border {
@@ -60,12 +60,12 @@ body {
 }
 
 .warm-glass {
-  @apply bg-white/40 backdrop-blur-xl border border-white/60 shadow-sm;
+  @apply bg-art-glass-bg backdrop-blur-xl border border-art-glass-border shadow-sm;
 }
 
-/* Custom Scrollbar for warm theme */
+/* Custom Scrollbar for theme */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
+  width: 5px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
   @apply bg-transparent;
