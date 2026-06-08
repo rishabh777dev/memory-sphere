@@ -56,11 +56,11 @@ body {
 }
 
 .art-glass {
-  @apply bg-art-glass-bg backdrop-blur-xl border border-art-glass-border shadow-sm;
+  @apply bg-art-glass-bg backdrop-blur-2xl border border-art-glass-border shadow-md;
 }
 
 .warm-glass {
-  @apply bg-art-glass-bg backdrop-blur-xl border border-art-glass-border shadow-sm;
+  @apply bg-art-glass-bg backdrop-blur-2xl border border-art-glass-border shadow-md;
 }
 
 /* Custom Scrollbar for theme */

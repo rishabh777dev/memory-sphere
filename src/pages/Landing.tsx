@@ -107,7 +107,7 @@ export default function Landing() {
     <div className="relative w-full h-screen bg-art-bg text-art-text font-sans selection:bg-art-accent selection:text-white transition-colors duration-700 overflow-y-auto custom-scrollbar scroll-smooth">
       
       {/* --- Fixed 3D Background --- */}
-      <div className="fixed inset-0 z-0 opacity-60 md:opacity-100 pointer-events-none">
+      <div className="fixed inset-0 z-0 opacity-30 md:opacity-50 pointer-events-none transition-opacity duration-1000">
         <Canvas camera={{ position: [0, 0, 10], fov: 45 }}>
           <Suspense fallback={null}>
             <Scene theme={theme} />
