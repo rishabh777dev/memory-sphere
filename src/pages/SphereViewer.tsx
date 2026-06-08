@@ -140,7 +140,7 @@ export default function SphereViewer() {
       <div className="absolute top-6 left-6 sm:top-10 sm:left-10 z-10 flex flex-col gap-6 pointer-events-none">
         <button 
           onClick={() => navigate('/dashboard')} 
-          className="pointer-events-auto flex items-center gap-3 px-6 py-3 warm-glass rounded-full text-[10px] uppercase tracking-[0.3em] text-art-text-dim hover:text-art-accent hover:scale-105 transition-all font-black shadow-sm"
+          className="pointer-events-auto flex items-center gap-3 px-6 py-3 warm-glass rounded-full text-[12px] uppercase tracking-[0.3em] text-art-text-dim hover:text-art-accent hover:scale-105 transition-all font-black shadow-sm"
         >
           <ArrowLeft size={14} /> <span className="hidden sm:inline">Vault</span>
         </button>
@@ -154,14 +154,14 @@ export default function SphereViewer() {
           <ThemeToggle />
           <button 
             onClick={() => setIsShareModalOpen(true)}
-            className="flex items-center gap-3 px-6 py-3 warm-glass rounded-full shadow-sm text-[9px] uppercase tracking-widest font-black text-art-text-dim hover:text-art-accent transition-all"
+            className="flex items-center gap-3 px-6 py-3 warm-glass rounded-full shadow-sm text-[11px] uppercase tracking-widest font-black text-art-text-dim hover:text-art-accent transition-all"
           >
             <Share2 size={12} />
             <span className="hidden sm:inline">Share Sphere</span>
           </button>
         </div>
         
-        <div className="flex items-center gap-3 px-6 py-3 warm-glass rounded-full shadow-sm text-[9px] uppercase tracking-widest font-black">
+        <div className="flex items-center gap-3 px-6 py-3 warm-glass rounded-full shadow-sm text-[11px] uppercase tracking-widest font-black">
           <div className={`w-2 h-2 rounded-full ${!cameraStarted ? 'bg-gray-300' : isCameraDenied ? 'bg-red-400 shadow-[0_0_10px_rgba(248,113,113,0.4)]' : 'bg-art-accent shadow-[0_0_10px_var(--art-accent)]'}`}></div>
           <span className={!cameraStarted ? 'text-art-text-dim/40' : isCameraDenied ? 'text-red-500' : 'text-art-accent'}>
             {cameraStarted ? (isCameraDenied ? 'Blocked' : 'Active') : 'Standby'}
@@ -169,7 +169,7 @@ export default function SphereViewer() {
         </div>
 
         {cameraStarted && !isCameraDenied && gestureMode !== 'idle' && (
-          <div className="flex items-center gap-3 px-6 py-3 bg-art-accent text-white rounded-full shadow-lg text-[9px] uppercase tracking-widest font-black">
+          <div className="flex items-center gap-3 px-6 py-3 bg-art-accent text-white rounded-full shadow-lg text-[11px] uppercase tracking-widest font-black">
             <RotateCcw size={12} className="animate-spin" />
             <span>{gestureMode === 'rotate' ? 'Manipulating' : 'Scaling'}</span>
           </div>

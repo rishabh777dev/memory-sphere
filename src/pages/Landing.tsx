@@ -120,18 +120,18 @@ export default function Landing() {
 
       {/* --- Navigation --- */}
       <nav className="fixed top-0 left-0 w-full p-6 sm:p-10 flex justify-between items-center z-[100] backdrop-blur-sm sm:backdrop-blur-none bg-art-bg/10 sm:bg-transparent border-b border-art-line sm:border-none transition-all duration-500">
-        <div className="text-[10px] font-black tracking-[0.5em] uppercase flex items-center gap-3">
+        <div className="text-[12px] font-black tracking-[0.5em] uppercase flex items-center gap-3">
           <div className="w-2.5 h-2.5 bg-art-accent rounded-full shadow-[0_0_15px_var(--art-accent)]" />
           <span className="hidden sm:inline">Memory.Sphere</span>
           <span className="sm:hidden">M.S</span>
         </div>
         <div className="flex gap-4 sm:gap-10 items-center text-art-text">
-          <div className="hidden md:flex gap-8 text-[9px] uppercase tracking-widest font-black text-art-text-dim">
+          <div className="hidden md:flex gap-8 text-[11px] uppercase tracking-widest font-black text-art-text-dim">
             <a href="#interaction" className="hover:text-art-accent transition-colors">Navigation</a>
             <a href="#sharing" className="hover:text-art-accent transition-colors">Connectivity</a>
           </div>
           <ThemeToggle />
-          <Link to="/auth" className="px-6 py-3 warm-glass rounded-full text-[10px] font-black uppercase tracking-widest text-art-text hover:text-art-accent hover:scale-105 transition-all shadow-sm">
+          <Link to="/auth" className="px-6 py-3 warm-glass rounded-full text-[12px] font-black uppercase tracking-widest text-art-text hover:text-art-accent hover:scale-105 transition-all shadow-sm">
             Access Vault
           </Link>
         </div>
@@ -172,9 +172,9 @@ export default function Landing() {
               <Link to="/auth" className="w-full sm:w-auto px-14 py-7 bg-art-text text-art-bg rounded-2xl text-[12px] font-black uppercase tracking-[0.3em] hover:bg-art-accent hover:text-white transition-all shadow-2xl shadow-art-text/10 flex items-center justify-center gap-4 group font-black">
                 Establish Clearance <ArrowRight size={18} className="group-hover:translate-x-3 transition-transform" />
               </Link>
-              <div className="flex items-center gap-4 text-art-text-dim/60">
+              <div className="flex items-center gap-4 text-art-text-dim/60 font-bold">
                 <MoveDown size={20} className="animate-bounce" />
-                <span className="text-[10px] uppercase tracking-[0.2em] font-black">Begin Transmission</span>
+                <span className="text-[12px] uppercase tracking-[0.2em] font-black">Begin Transmission</span>
               </div>
             </motion.div>
           </div>
@@ -185,7 +185,7 @@ export default function Landing() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-32 items-center">
             <div className="space-y-12">
               <div className="space-y-4">
-                <div className="text-art-accent text-[11px] font-black uppercase tracking-[0.4em]">Protocol 01</div>
+                <div className="text-art-accent text-[13px] font-black uppercase tracking-[0.4em]">Protocol 01</div>
                 <h2 className="text-5xl sm:text-7xl font-black uppercase tracking-tight text-art-text leading-none">
                   Gesture <br/>Synthesis.
                 </h2>
@@ -201,8 +201,8 @@ export default function Landing() {
                 ].map((item, i) => (
                   <div key={i} className="space-y-4 group">
                     <div className="p-4 warm-glass inline-block rounded-2xl text-art-accent group-hover:scale-110 transition-transform shadow-sm">{item.icon}</div>
-                    <h3 className="text-xs font-black uppercase tracking-widest text-art-text">{item.title}</h3>
-                    <p className="text-[10px] text-art-text font-bold leading-relaxed opacity-70">{item.desc}</p>
+                    <h3 className="text-sm font-black uppercase tracking-widest text-art-text">{item.title}</h3>
+                    <p className="text-[12px] text-art-text font-bold leading-relaxed opacity-70">{item.desc}</p>
                   </div>
                 ))}
               </div>
@@ -227,22 +227,23 @@ export default function Landing() {
           
           <div className="max-w-4xl relative z-10 space-y-12">
             <div className="space-y-6">
-              <div className="text-art-accent text-[11px] font-black uppercase tracking-[0.4em]">Protocol 02</div>
-              <h2 className="text-6xl sm:text-9xl font-black uppercase tracking-tighter text-art-text leading-none">
-                Linked <br/>Existence.
-              </h2>
+            <div className="text-art-accent text-[13px] font-black uppercase tracking-[0.4em]">Protocol 02</div>
+            <h2 className="text-6xl sm:text-9xl font-black uppercase tracking-tighter text-art-text leading-none">
+              Linked <br/>Existence.
+            </h2>
             </div>
-            <p className="text-art-text text-lg sm:text-2xl leading-relaxed max-w-2xl mx-auto font-medium">
-              Every spatial vault generates a unique, immutable link. Share your perspective with the world in a single click.
+            <p className="text-art-text-dim text-lg sm:text-2xl leading-relaxed max-w-2xl mx-auto font-medium">
+            Every spatial vault generates a unique, immutable link. Share your perspective with the world in a single click.
             </p>
-            
+
             <div className="flex flex-wrap justify-center gap-4 sm:gap-8 pt-10">
-              {['Public URI', 'Zero Latency', 'Privacy First', 'Cloud Sync'].map((tag) => (
-                <div key={tag} className="px-10 py-5 warm-glass rounded-2xl text-[11px] font-black uppercase tracking-widest text-art-text hover:text-art-accent transition-colors shadow-sm">
-                  {tag}
-                </div>
-              ))}
+            {['Public URI', 'Zero Latency', 'Privacy First', 'Cloud Sync'].map((tag) => (
+              <div key={tag} className="px-10 py-5 warm-glass rounded-2xl text-[12px] font-black uppercase tracking-widest text-art-text hover:text-art-accent transition-colors shadow-sm">
+                {tag}
+              </div>
+            ))}
             </div>
+
           </div>
         </Section>
 
@@ -261,8 +262,8 @@ export default function Landing() {
              </Link>
 
              <footer className="mt-32 pt-16 border-t border-art-line flex flex-col sm:flex-row justify-between items-center gap-12 opacity-60">
-                <div className="text-[10px] font-black tracking-[0.5em] uppercase text-art-text-dim">Memory Sphere v2.5.0</div>
-                <div className="flex gap-12 text-[9px] font-black uppercase tracking-widest text-art-text-dim items-center">
+                <div className="text-[12px] font-black tracking-[0.5em] uppercase text-art-text-dim">Memory Sphere v2.5.0</div>
+                <div className="flex gap-12 text-[11px] font-black uppercase tracking-widest text-art-text-dim items-center">
                   <a href="https://github.com/rishabh777dev/memory-sphere" className="hover:text-art-accent transition-colors underline decoration-art-accent/20">Source</a>
                   <span className="text-art-line">/</span>
                   <a href="#" className="hover:text-art-accent transition-colors underline decoration-art-accent/20">Terms</a>

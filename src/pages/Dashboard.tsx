@@ -103,13 +103,13 @@ export default function Dashboard() {
       <header className="mb-12 sm:mb-20 flex flex-col sm:flex-row justify-between items-start sm:items-end border-b border-art-line pb-8 relative z-10 gap-6">
         <div>
           <h1 className="text-3xl sm:text-4xl font-black uppercase tracking-[0.3em] text-art-text">Your Vault</h1>
-          <p className="text-art-text-dim text-[10px] tracking-[0.2em] uppercase mt-2 font-bold">Manage your Spatial Spheres</p>
+          <p className="text-art-text-dim text-[12px] tracking-[0.2em] uppercase mt-2 font-bold">Manage your Spatial Spheres</p>
         </div>
         <div className="flex items-center gap-6">
           <ThemeToggle />
           <button 
             onClick={handleLogout} 
-            className="px-6 py-3 rounded-full warm-glass text-[10px] text-art-text-dim hover:text-art-accent uppercase tracking-widest transition-all font-black shadow-sm"
+            className="px-6 py-3 rounded-full warm-glass text-[12px] text-art-text-dim hover:text-art-accent uppercase tracking-widest transition-all font-black shadow-sm"
           >
             Terminate Session
           </button>
@@ -177,7 +177,7 @@ export default function Dashboard() {
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="text-xl font-black tracking-tight text-art-text group-hover:text-art-accent transition-colors line-clamp-2">{album.name}</h3>
-                      <p className="text-[9px] text-art-text-dim uppercase tracking-[0.2em] mt-3 font-bold opacity-60">
+                      <p className="text-[11px] text-art-text-dim uppercase tracking-[0.2em] mt-3 font-bold opacity-60">
                         {new Date(album.created_at).toLocaleDateString()}
                       </p>
                     </div>
