@@ -18,7 +18,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'placeholder-client-id';
 
   return (
     <GoogleOAuthProvider clientId={clientId}>
