@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, ArrowRight, Loader2, Database, Pencil, Check, X, Trash2 } from 'lucide-react';
+import { Plus, ArrowRight, Loader2, Database, Pencil, Check, X, Trash2, Cloud } from 'lucide-react';
 import * as FramerMotion from 'motion/react';
+import { useGoogleLogin } from '@react-oauth/google';
 import { SphereManageModal } from '../components/SphereManageModal';
 import { useAuth } from '../hooks/useAuth';
 import { albumService, type Album } from '../services/supabase';
+import { googleDriveService } from '../services/googleDrive';
 import { ThemeToggle } from '../components/ThemeToggle';
 import { SpatialBackground } from '../components/SpatialBackground';
 
@@ -18,6 +20,7 @@ export default function Dashboard() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
   const [managingAlbum, setManagingAlbum] = useState<Album | null>(null);
+  const [driveToken, setDriveToken] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const fetchAlbums = useCallback(async () => {
@@ -36,15 +39,36 @@ export default function Dashboard() {
     fetchAlbums();
   }, [fetchAlbums]);
 
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess: (tokenResponse) => {
+      setDriveToken(tokenResponse.access_token);
+      alert('Google Drive connected successfully!');
+    },
+    onError: (error) => console.error('Google Login Failed', error),
+    scope: 'https://www.googleapis.com/auth/drive.file',
+  });
+
   const createNewSphere = async () => {
     if (!user) return;
+    if (!driveToken) {
+      alert("Please connect your Google Drive first to store your spatial memories.");
+      return;
+    }
+
     setIsCreating(true);
     const newName = `Sphere Collection #${albums.length + 1}`;
     
     try {
+      // 1. Create Folder in Google Drive
+      const folderId = await googleDriveService.createFolder(driveToken, `MemorySphere - ${newName}`);
+
+      // 2. Create Album in Database, storing the Drive Folder ID
       const newAlbum = await albumService.createAlbum(user.id, newName);
-      setAlbums(prev => [newAlbum, ...prev]);
-      setManagingAlbum(newAlbum);
+      await albumService.updateAlbum(newAlbum.id, { drive_folder_id: folderId });
+      
+      const completeAlbum = { ...newAlbum, drive_folder_id: folderId };
+      setAlbums(prev => [completeAlbum, ...prev]);
+      setManagingAlbum(completeAlbum);
     } catch (err: any) {
       console.error('Failed to create album:', err);
       alert(`Database Error: ${err.message || JSON.stringify(err)}`);
@@ -104,14 +128,29 @@ export default function Dashboard() {
           <h1 className="text-3xl sm:text-4xl font-black uppercase tracking-[0.3em] text-art-text">Your Vault</h1>
           <p className="text-art-text-dim text-[12px] tracking-[0.2em] uppercase mt-2 font-black opacity-60">Manage your Spatial Spheres</p>
         </div>
-        <div className="flex items-center gap-6">
-          <ThemeToggle />
-          <button 
-            onClick={handleLogout} 
-            className="px-8 py-4 rounded-full warm-glass text-[11px] text-art-text hover:text-art-accent uppercase tracking-widest transition-all font-black shadow-sm"
-          >
-            Terminate Session
-          </button>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+          {!driveToken ? (
+            <button 
+              onClick={() => loginWithGoogle()}
+              className="px-6 py-3 rounded-full bg-[#4285F4] text-white text-[11px] hover:bg-[#3367D6] uppercase tracking-widest transition-all font-black shadow-md flex items-center gap-2"
+            >
+              <Cloud size={14} /> Connect Google Drive
+            </button>
+          ) : (
+            <div className="px-6 py-3 rounded-full warm-glass text-[11px] text-[#4285F4] uppercase tracking-widest font-black shadow-sm flex items-center gap-2 border-[#4285F4]/30">
+              <Cloud size={14} /> Drive Connected
+            </div>
+          )}
+          
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <button 
+              onClick={handleLogout} 
+              className="px-8 py-4 rounded-full warm-glass text-[11px] text-art-text hover:text-art-accent uppercase tracking-widest transition-all font-black shadow-sm"
+            >
+              Terminate Session
+            </button>
+          </div>
         </div>
       </header>
 
@@ -129,7 +168,9 @@ export default function Dashboard() {
           ) : (
             <>
               <Plus className="w-12 h-12 mb-4 group-hover:scale-110 transition-transform" />
-              <span className="text-[12px] font-black uppercase tracking-[0.3em]">Initialize Sphere</span>
+              <span className="text-[12px] font-black uppercase tracking-[0.3em]">
+                {driveToken ? 'Initialize Sphere' : 'Connect Drive to Start'}
+              </span>
             </>
           )}
         </motion.button>
