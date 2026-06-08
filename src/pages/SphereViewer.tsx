@@ -123,7 +123,7 @@ export default function SphereViewer() {
   };
 
   return (
-    <div className="relative w-full h-screen bg-art-bg overflow-hidden font-sans text-art-text selection:bg-art-accent selection:text-white transition-colors duration-500">
+    <div className="relative w-full h-screen bg-art-bg overflow-hidden font-sans text-art-text selection:bg-art-accent selection:text-white transition-colors duration-500 touch-none overscroll-none">
       
       <div className="absolute inset-0 z-0 opacity-60 md:opacity-100" style={{ background: theme === 'light' ? 'radial-gradient(circle_at_center,#fff_0%,#F5F2ED_100%)' : 'radial-gradient(circle_at_center,#1D1D1B_0%,#000_100%)' }}>
         <Suspense fallback={null}>
