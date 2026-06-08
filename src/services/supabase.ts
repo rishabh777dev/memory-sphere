@@ -195,11 +195,38 @@ export const photoService = {
     return data;
   },
 
+  async saveDriveMetadata(albumId: string, webContentLink: string, fileName: string): Promise<Photo> {
+    const newPhoto = {
+      id: uuidv4(),
+      album_id: albumId,
+      image_url: webContentLink, // Store the direct Drive link
+      title: fileName.split('.')[0]
+    };
+
+    const { data, error } = await supabase
+      .from('photos')
+      .insert([newPhoto])
+      .select()
+      .single();
+    
+    if (error) throw error;
+    return data;
+  },
+
   async updatePhotoMetadata(id: string, updates: Partial<Photo>): Promise<void> {
     const { error } = await supabase
       .from('photos')
       .update(updates)
       .eq('id', id);
+    if (error) throw error;
+  },
+
+  async deletePhotoRecord(photoId: string): Promise<void> {
+    const { error } = await supabase
+      .from('photos')
+      .delete()
+      .eq('id', photoId);
+    
     if (error) throw error;
   },
 

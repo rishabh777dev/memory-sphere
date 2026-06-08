@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { X, Upload, Trash2, ArrowRight, Loader2, Share2, Image as ImageIcon, Copy, Check } from 'lucide-react';
+import { X, Upload, Trash2, ArrowRight, Loader2, Share2, Image as ImageIcon, Copy, Check, AlertCircle } from 'lucide-react';
 import * as FramerMotion from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import { photoService, albumService, type Photo, type Album } from '../services/supabase';
+import { googleDriveService } from '../services/googleDrive';
 import { QRCodeCanvas } from 'qrcode.react';
 
 const { motion, AnimatePresence } = FramerMotion;
@@ -10,10 +11,11 @@ const { motion, AnimatePresence } = FramerMotion;
 interface SphereManageModalProps {
   albumId: string;
   albumName: string;
+  driveToken: string | null;
   onClose: () => void;
 }
 
-export function SphereManageModal({ albumId, albumName, onClose }: SphereManageModalProps) {
+export function SphereManageModal({ albumId, albumName, driveToken, onClose }: SphereManageModalProps) {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [album, setAlbum] = useState<Album | null>(null);
   const [loading, setLoading] = useState(true);
@@ -42,10 +44,16 @@ export function SphereManageModal({ albumId, albumName, onClose }: SphereManageM
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
+    
+    if (!driveToken || !album?.drive_folder_id) {
+      alert("Error: Missing Google Drive connection or folder ID. Please ensure your drive is connected on the dashboard.");
+      return;
+    }
+
     const files = Array.from(e.target.files);
 
     const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-    const MAX_SIZE_MB = 10;
+    const MAX_SIZE_MB = 20; // Increased limit since we are using Drive
     const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
     const validFiles = files.filter(file => {
@@ -58,12 +66,20 @@ export function SphereManageModal({ albumId, albumName, onClose }: SphereManageM
     setUploading(true);
 
     try {
-      const uploadPromises = validFiles.map(file => photoService.uploadPhoto(albumId, file));
+      // 1. Upload to Google Drive directly
+      const uploadPromises = validFiles.map(async (file) => {
+        const driveData = await googleDriveService.uploadFile(driveToken, album.drive_folder_id!, file);
+        
+        // 2. Save the metadata and Drive webContentLink to Supabase
+        const dbRecord = await photoService.saveDriveMetadata(albumId, driveData.webContentLink, file.name);
+        return dbRecord;
+      });
+
       const newPhotos = await Promise.all(uploadPromises);
       setPhotos(prev => [...newPhotos, ...prev]);
     } catch (err) {
       console.error("Upload failed", err);
-      alert("Some uploads failed. Please try again.");
+      alert("Failed to upload to Google Drive. Ensure you have granted file permissions.");
     } finally {
       setUploading(false);
     }
@@ -71,10 +87,12 @@ export function SphereManageModal({ albumId, albumName, onClose }: SphereManageM
 
   const deletePhoto = async (photoId: string, url: string) => {
     try {
-      await photoService.deletePhoto(photoId, url);
+      // Note: Full Drive deletion requires a different API call. 
+      // For now, we just remove it from the visual gallery (Supabase DB).
+      await photoService.deletePhotoRecord(photoId);
       setPhotos(prev => prev.filter(p => p.id !== photoId));
     } catch (err) {
-      console.error("Failed to delete photo", err);
+      console.error("Failed to remove photo from gallery", err);
     }
   };
 

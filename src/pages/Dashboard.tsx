@@ -247,6 +247,7 @@ export default function Dashboard() {
         <SphereManageModal 
           albumId={managingAlbum.id} 
           albumName={managingAlbum.name} 
+          driveToken={driveToken}
           onClose={() => setManagingAlbum(null)} 
         />
       )}
