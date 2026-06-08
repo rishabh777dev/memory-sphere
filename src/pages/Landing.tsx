@@ -107,7 +107,7 @@ export default function Landing() {
     <div className="relative w-full h-screen bg-art-bg text-art-text font-sans selection:bg-art-accent selection:text-white transition-colors duration-700 overflow-y-auto custom-scrollbar scroll-smooth">
       
       {/* --- Fixed 3D Background --- */}
-      <div className="fixed inset-0 z-0 opacity-30 md:opacity-50 pointer-events-none transition-opacity duration-1000">
+      <div className="fixed inset-0 z-0 opacity-100 pointer-events-none transition-opacity duration-1000">
         <Canvas camera={{ position: [0, 0, 10], fov: 45 }}>
           <Suspense fallback={null}>
             <Scene theme={theme} />
@@ -142,7 +142,7 @@ export default function Landing() {
         
         {/* Hero Section */}
         <Section>
-          <div className="max-w-5xl mt-20 sm:mt-0">
+          <div className="max-w-5xl mt-20 sm:mt-0 p-8 sm:p-16 warm-glass rounded-[3rem] shadow-2xl">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
