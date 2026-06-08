@@ -16,10 +16,10 @@
     --art-bg: #0A0A0A;
     --art-accent: #E69A6B;
     --art-text: #F3EFEA;
-    --art-text-dim: #A0A0A0;
-    --art-line: rgba(255, 255, 255, 0.1);
-    --art-glass-bg: rgba(0, 0, 0, 0.4);
-    --art-glass-border: rgba(255, 255, 255, 0.1);
+    --art-text-dim: #B0B0B0;
+    --art-line: rgba(255, 255, 255, 0.12);
+    --art-glass-bg: rgba(0, 0, 0, 0.6);
+    --art-glass-border: rgba(255, 255, 255, 0.15);
   }
 }
 

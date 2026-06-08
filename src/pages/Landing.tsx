@@ -1,7 +1,7 @@
 import { useRef, useMemo, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Float, MeshTransmissionMaterial, Environment, Html } from '@react-three/drei';
+import { Float, Environment, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import * as FramerMotion from 'motion/react';
 import { ArrowRight, MoveDown, MousePointer2, Camera, Loader2 } from 'lucide-react';
@@ -9,6 +9,17 @@ import { ThemeToggle } from '../components/ThemeToggle';
 import { useTheme } from '../hooks/useTheme';
 
 const { motion } = FramerMotion;
+
+function CanvasLoader() {
+  return (
+    <Html center>
+      <div className="flex flex-col items-center gap-4 bg-art-bg/80 backdrop-blur-md p-8 rounded-3xl border border-art-line shadow-2xl">
+        <Loader2 className="animate-spin text-art-accent w-10 h-10" />
+        <span className="text-[10px] uppercase tracking-[0.3em] text-art-text-dim font-black">Initializing Spatial Engine</span>
+      </div>
+    </Html>
+  );
+}
 
 // --- 3D Scene Elements ---
 
@@ -26,22 +37,15 @@ function MemoryNode({ position, color, speed, index }: { position: [number, numb
   return (
     <Float speed={2} rotationIntensity={1} floatIntensity={1}>
       <mesh position={position} ref={meshRef}>
-        <sphereGeometry args={[0.5, 32, 32]} />
-        <MeshTransmissionMaterial 
-          backside
-          samples={4}
-          thickness={0.5}
-          roughness={0.1}
-          transmission={1}
-          ior={1.2}
-          chromaticAberration={0.02}
-          anisotropy={0.1}
-          distortion={0.1}
-          distortionScale={0.1}
-          temporalDistortion={0.1}
+        <sphereGeometry args={[0.5, 16, 16]} />
+        <meshPhysicalMaterial 
+          transparent
+          transmission={0.95}
+          thickness={1}
+          roughness={0.05}
+          ior={1.5}
           color={color}
-          attenuationDistance={0.5}
-          attenuationColor={color}
+          metalness={0.05}
         />
       </mesh>
     </Float>
@@ -49,8 +53,9 @@ function MemoryNode({ position, color, speed, index }: { position: [number, numb
 }
 
 function Scene({ theme }: { theme: 'light' | 'dark' }) {
+  const { camera } = useThree();
   const accentColor = theme === 'light' ? '#D97757' : '#E69A6B';
-  const nodeColor = theme === 'light' ? '#F3EFEA' : '#2A2A2A';
+  const nodeColor = theme === 'light' ? '#F3EFEA' : '#4A4A4A';
 
   const nodes = useMemo(() => {
     return Array.from({ length: 15 }).map((_, i) => ({
@@ -74,9 +79,9 @@ function Scene({ theme }: { theme: 'light' | 'dark' }) {
   return (
     <>
       <Environment preset={theme === 'light' ? 'studio' : 'night'} />
-      <ambientLight intensity={theme === 'light' ? 0.8 : 0.4} />
-      <pointLight position={[10, 10, 10]} intensity={1.5} color={accentColor} />
-      <pointLight position={[-10, -10, -10]} intensity={1} color={nodeColor} />
+      <ambientLight intensity={theme === 'light' ? 1.0 : 0.4} />
+      <pointLight position={[10, 10, 10]} intensity={2.0} color={accentColor} />
+      <pointLight position={[-10, -10, -10]} intensity={1.5} color={nodeColor} />
       
       {nodes.map((node, i) => (
         <MemoryNode key={i} index={i} {...node} />
@@ -110,8 +115,8 @@ export default function Landing() {
         </Canvas>
       </div>
 
-      {/* --- Aesthetic Overlays --- */}
-      <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
+      {/* --- Aesthetic Overlays (Simplified for performance) --- */}
+      <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.03]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
 
       {/* --- Navigation --- */}
       <nav className="fixed top-0 left-0 w-full p-6 sm:p-10 flex justify-between items-center z-[100] backdrop-blur-sm sm:backdrop-blur-none bg-art-bg/10 sm:bg-transparent border-b border-art-line sm:border-none transition-all duration-500">
@@ -145,7 +150,7 @@ export default function Landing() {
             >
               <h1 className="text-6xl sm:text-8xl md:text-[10rem] font-black uppercase tracking-tighter leading-[0.8] text-art-text">
                 Spatial <br/>
-                <span className="text-transparent opacity-40" style={{ WebkitTextStroke: '2px var(--art-text)' }}>Memories.</span>
+                <span className="text-transparent opacity-60" style={{ WebkitTextStroke: '2px var(--art-text)' }}>Memories.</span>
               </h1>
             </motion.div>
             
@@ -164,7 +169,7 @@ export default function Landing() {
               transition={{ duration: 1, delay: 0.5 }}
               className="mt-16 flex flex-col sm:flex-row items-center gap-8"
             >
-              <Link to="/auth" className="w-full sm:w-auto px-14 py-7 bg-art-text text-art-bg rounded-2xl text-[12px] font-black uppercase tracking-[0.3em] hover:bg-art-accent hover:text-white transition-all shadow-2xl shadow-art-text/10 flex items-center justify-center gap-4 group">
+              <Link to="/auth" className="w-full sm:w-auto px-14 py-7 bg-art-text text-art-bg rounded-2xl text-[12px] font-black uppercase tracking-[0.3em] hover:bg-art-accent hover:text-white transition-all shadow-2xl shadow-art-text/10 flex items-center justify-center gap-4 group font-black">
                 Establish Clearance <ArrowRight size={18} className="group-hover:translate-x-3 transition-transform" />
               </Link>
               <div className="flex items-center gap-4 text-art-text-dim/60">
@@ -185,7 +190,7 @@ export default function Landing() {
                   Gesture <br/>Synthesis.
                 </h2>
               </div>
-              <p className="text-art-text-dim text-lg leading-loose max-w-md font-medium opacity-80">
+              <p className="text-art-text text-lg leading-loose max-w-md font-medium opacity-80">
                 Leveraging advanced computer vision, Memory Sphere translates physical hand movements into fluid 3D navigation. No controllers required.
               </p>
               
@@ -197,7 +202,7 @@ export default function Landing() {
                   <div key={i} className="space-y-4 group">
                     <div className="p-4 warm-glass inline-block rounded-2xl text-art-accent group-hover:scale-110 transition-transform shadow-sm">{item.icon}</div>
                     <h3 className="text-xs font-black uppercase tracking-widest text-art-text">{item.title}</h3>
-                    <p className="text-[10px] text-art-text-dim font-bold leading-relaxed">{item.desc}</p>
+                    <p className="text-[10px] text-art-text font-bold leading-relaxed opacity-70">{item.desc}</p>
                   </div>
                 ))}
               </div>
@@ -206,7 +211,7 @@ export default function Landing() {
               <div className="absolute -inset-10 bg-art-accent/5 rounded-full blur-[100px] group-hover:bg-art-accent/10 transition-colors" />
               <div className="relative aspect-square rounded-[4rem] warm-glass flex items-center justify-center p-12 shadow-2xl overflow-hidden border-art-glass-border">
                 <div className="text-center">
-                  <div className="w-24 h-24 bg-white/80 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl text-art-accent animate-pulse">
+                  <div className="w-24 h-24 bg-white/80 dark:bg-black/80 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl text-art-accent animate-pulse">
                     <Camera size={40} />
                   </div>
                   <p className="text-[10px] uppercase tracking-[0.5em] font-black text-art-text/30">Live Spatial Feed</p>
@@ -227,13 +232,13 @@ export default function Landing() {
                 Linked <br/>Existence.
               </h2>
             </div>
-            <p className="text-art-text-dim text-lg sm:text-2xl leading-relaxed max-w-2xl mx-auto font-medium">
+            <p className="text-art-text text-lg sm:text-2xl leading-relaxed max-w-2xl mx-auto font-medium">
               Every spatial vault generates a unique, immutable link. Share your perspective with the world in a single click.
             </p>
             
             <div className="flex flex-wrap justify-center gap-4 sm:gap-8 pt-10">
               {['Public URI', 'Zero Latency', 'Privacy First', 'Cloud Sync'].map((tag) => (
-                <div key={tag} className="px-10 py-5 warm-glass rounded-2xl text-[11px] font-black uppercase tracking-widest text-art-text-dim hover:text-art-text transition-colors shadow-sm">
+                <div key={tag} className="px-10 py-5 warm-glass rounded-2xl text-[11px] font-black uppercase tracking-widest text-art-text hover:text-art-accent transition-colors shadow-sm">
                   {tag}
                 </div>
               ))}
