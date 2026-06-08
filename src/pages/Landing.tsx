@@ -1,96 +1,10 @@
-import { useRef, useMemo, Suspense } from 'react';
 import { Link } from 'react-router-dom';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Float, Environment, Html } from '@react-three/drei';
-import * as THREE from 'three';
 import * as FramerMotion from 'motion/react';
-import { ArrowRight, MoveDown, MousePointer2, Camera, Loader2 } from 'lucide-react';
+import { ArrowRight, MoveDown, MousePointer2, Camera } from 'lucide-react';
 import { ThemeToggle } from '../components/ThemeToggle';
-import { useTheme } from '../hooks/useTheme';
+import { SpatialBackground } from '../components/SpatialBackground';
 
 const { motion } = FramerMotion;
-
-function CanvasLoader() {
-  return (
-    <Html center>
-      <div className="flex flex-col items-center gap-4 bg-art-bg/80 backdrop-blur-md p-8 rounded-3xl border border-art-line shadow-2xl">
-        <Loader2 className="animate-spin text-art-accent w-10 h-10" />
-        <span className="text-[10px] uppercase tracking-[0.3em] text-art-text-dim font-black">Initializing Spatial Engine</span>
-      </div>
-    </Html>
-  );
-}
-
-// --- 3D Scene Elements ---
-
-function MemoryNode({ position, color, speed, index }: { position: [number, number, number], color: string, speed: number, index: number }) {
-  const meshRef = useRef<THREE.Mesh>(null);
-  
-  useFrame((state) => {
-    if (!meshRef.current) return;
-    const t = state.clock.getElapsedTime() * speed;
-    meshRef.current.position.y += Math.sin(t + index) * 0.002;
-    meshRef.current.rotation.x = t * 0.1;
-    meshRef.current.rotation.z = t * 0.15;
-  });
-
-  return (
-    <Float speed={2} rotationIntensity={1} floatIntensity={1}>
-      <mesh position={position} ref={meshRef}>
-        <sphereGeometry args={[0.5, 16, 16]} />
-        <meshPhysicalMaterial 
-          transparent
-          transmission={0.95}
-          thickness={1}
-          roughness={0.05}
-          ior={1.5}
-          color={color}
-          metalness={0.05}
-        />
-      </mesh>
-    </Float>
-  );
-}
-
-function Scene({ theme }: { theme: 'light' | 'dark' }) {
-  const { camera } = useThree();
-  const accentColor = '#E79A6B'; // Amber stays consistent
-  const nodeColor = theme === 'light' ? '#E3DBC7' : '#2A2A2A'; 
-
-  const nodes = useMemo(() => {
-    return Array.from({ length: 15 }).map((_, i) => ({
-      position: [
-        (Math.random() - 0.5) * 12,
-        (Math.random() - 0.5) * 12,
-        (Math.random() - 0.5) * 8 - 5
-      ] as [number, number, number],
-      color: i % 2 === 0 ? accentColor : nodeColor,
-      speed: 0.3 + Math.random() * 0.4
-    }));
-  }, [accentColor, nodeColor]);
-
-  useFrame((state) => {
-    // Subtle mouse tilt for depth
-    state.camera.position.x = THREE.MathUtils.lerp(state.camera.position.x, state.mouse.x * 1.5, 0.03);
-    state.camera.position.y = THREE.MathUtils.lerp(state.camera.position.y, state.mouse.y * 1.5, 0.03);
-    state.camera.lookAt(0, 0, -10);
-  });
-
-  return (
-    <>
-      <Environment preset={theme === 'light' ? 'studio' : 'night'} />
-      <ambientLight intensity={theme === 'light' ? 1.0 : 0.5} />
-      <pointLight position={[10, 10, 10]} intensity={2.0} color={accentColor} />
-      <pointLight position={[-10, -10, -10]} intensity={1.5} color={nodeColor} />
-      
-      {nodes.map((node, i) => (
-        <MemoryNode key={i} index={i} {...node} />
-      ))}
-
-      <gridHelper args={[100, 40, accentColor, theme === 'light' ? '#E3DBC7' : '#2A2A2A']} rotation={[Math.PI / 2, 0, 0]} position={[0, 0, -15]} />
-    </>
-  );
-}
 
 // --- HTML Layout Components ---
 
@@ -101,26 +15,18 @@ const Section = ({ children, className = "", id = "" }: { children: React.ReactN
 );
 
 export default function Landing() {
-  const { theme } = useTheme();
-
   return (
     <div className="relative w-full h-screen bg-art-bg text-art-text font-sans selection:bg-art-accent selection:text-white transition-colors duration-700 overflow-y-auto custom-scrollbar scroll-smooth">
       
-      {/* --- Fixed 3D Background --- */}
-      <div className="fixed inset-0 z-0 opacity-100 pointer-events-none transition-opacity duration-1000">
-        <Canvas camera={{ position: [0, 0, 10], fov: 45 }}>
-          <Suspense fallback={null}>
-            <Scene theme={theme} />
-          </Suspense>
-        </Canvas>
-      </div>
+      {/* --- Shared 3D Background --- */}
+      <SpatialBackground />
 
       {/* --- Aesthetic Overlays (Simplified for performance) --- */}
       <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.03]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
 
       {/* --- Navigation --- */}
       <nav className="fixed top-0 left-0 w-full p-6 sm:p-10 flex justify-between items-center z-[100] backdrop-blur-sm sm:backdrop-blur-none bg-art-bg/10 sm:bg-transparent border-b border-art-line sm:border-none transition-all duration-500">
-        <div className="text-[12px] font-black tracking-[0.5em] uppercase flex items-center gap-3">
+        <div className="text-[12px] font-black tracking-[0.5em] uppercase flex items-center gap-3 text-art-text">
           <div className="w-2.5 h-2.5 bg-art-accent rounded-full shadow-[0_0_15px_var(--art-accent)]" />
           <span className="hidden sm:inline">Memory.Sphere</span>
           <span className="sm:hidden">M.S</span>
@@ -232,10 +138,10 @@ export default function Landing() {
               Linked <br/>Existence.
             </h2>
             </div>
-            <p className="text-art-text-dim text-lg sm:text-2xl leading-relaxed max-w-2xl mx-auto font-medium">
+            <p className="text-art-text text-lg sm:text-2xl leading-relaxed max-w-2xl mx-auto font-medium">
             Every spatial vault generates a unique, immutable link. Share your perspective with the world in a single click.
             </p>
-
+            
             <div className="flex flex-wrap justify-center gap-4 sm:gap-8 pt-10">
             {['Public URI', 'Zero Latency', 'Privacy First', 'Cloud Sync'].map((tag) => (
               <div key={tag} className="px-10 py-5 warm-glass rounded-2xl text-[12px] font-black uppercase tracking-widest text-art-text hover:text-art-accent transition-colors shadow-sm">
@@ -243,7 +149,6 @@ export default function Landing() {
               </div>
             ))}
             </div>
-
           </div>
         </Section>
 

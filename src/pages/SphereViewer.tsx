@@ -33,9 +33,9 @@ function Loader() {
               r="40" cx="50" cy="50" 
             />
           </svg>
-          <div className="absolute inset-0 flex items-center justify-center text-[10px] font-black text-art-text">{Math.round(progress)}%</div>
+          <div className="absolute inset-0 flex items-center justify-center text-[12px] font-black text-art-text">{Math.round(progress)}%</div>
         </div>
-        <span className="text-[10px] uppercase tracking-[0.3em] text-art-accent font-black">Spatial Loading</span>
+        <span className="text-[12px] uppercase tracking-[0.3em] text-art-accent font-black">Spatial Loading</span>
       </div>
     </Html>
   );
@@ -125,7 +125,7 @@ export default function SphereViewer() {
   return (
     <div className="relative w-full h-screen bg-art-bg overflow-hidden font-sans text-art-text selection:bg-art-accent selection:text-white transition-colors duration-500 touch-none overscroll-none">
       
-      <div className="absolute inset-0 z-0 opacity-60 md:opacity-100" style={{ background: theme === 'light' ? 'radial-gradient(circle_at_center,#fff_0%,#F5F2ED_100%)' : 'radial-gradient(circle_at_center,#1D1D1B_0%,#000_100%)' }}>
+      <div className="absolute inset-0 z-0 opacity-100" style={{ background: theme === 'light' ? 'radial-gradient(circle_at_center,#fff_0%,#F5F2ED_100%)' : 'radial-gradient(circle_at_center,#1D1D1B_0%,#000_100%)' }}>
         <Suspense fallback={null}>
           <Canvas gl={{ antialias: false }}>
             <PerspectiveCamera makeDefault position={[0, 0, 0.1]} fov={75} near={0.01} far={1000} />
@@ -154,14 +154,14 @@ export default function SphereViewer() {
           <ThemeToggle />
           <button 
             onClick={() => setIsShareModalOpen(true)}
-            className="flex items-center gap-3 px-6 py-3 warm-glass rounded-full shadow-sm text-[11px] uppercase tracking-widest font-black text-art-text-dim hover:text-art-accent transition-all"
+            className="flex items-center gap-3 px-6 py-3 warm-glass rounded-full shadow-sm text-[12px] uppercase tracking-widest font-black text-art-text-dim hover:text-art-accent transition-all"
           >
             <Share2 size={12} />
             <span className="hidden sm:inline">Share Sphere</span>
           </button>
         </div>
         
-        <div className="flex items-center gap-3 px-6 py-3 warm-glass rounded-full shadow-sm text-[11px] uppercase tracking-widest font-black">
+        <div className="flex items-center gap-3 px-6 py-3 warm-glass rounded-full shadow-sm text-[12px] uppercase tracking-widest font-black">
           <div className={`w-2 h-2 rounded-full ${!cameraStarted ? 'bg-gray-300' : isCameraDenied ? 'bg-red-400 shadow-[0_0_10px_rgba(248,113,113,0.4)]' : 'bg-art-accent shadow-[0_0_10px_var(--art-accent)]'}`}></div>
           <span className={!cameraStarted ? 'text-art-text-dim/40' : isCameraDenied ? 'text-red-500' : 'text-art-accent'}>
             {cameraStarted ? (isCameraDenied ? 'Blocked' : 'Active') : 'Standby'}
@@ -169,7 +169,7 @@ export default function SphereViewer() {
         </div>
 
         {cameraStarted && !isCameraDenied && gestureMode !== 'idle' && (
-          <div className="flex items-center gap-3 px-6 py-3 bg-art-accent text-white rounded-full shadow-lg text-[11px] uppercase tracking-widest font-black">
+          <div className="flex items-center gap-3 px-6 py-3 bg-art-accent text-white rounded-full shadow-lg text-[12px] uppercase tracking-widest font-black">
             <RotateCcw size={12} className="animate-spin" />
             <span>{gestureMode === 'rotate' ? 'Manipulating' : 'Scaling'}</span>
           </div>
@@ -190,7 +190,7 @@ export default function SphereViewer() {
               <div className="flex justify-between items-start mb-10">
                 <div>
                   <h3 className="text-2xl font-black uppercase tracking-widest text-art-text">Share Vault</h3>
-                  <p className="text-art-text-dim text-[10px] uppercase tracking-[0.2em] mt-2 font-bold opacity-60">Manage Access Privileges</p>
+                  <p className="text-art-text-dim text-[11px] uppercase tracking-[0.2em] mt-2 font-bold opacity-60">Manage Access Privileges</p>
                 </div>
                 <button onClick={() => setIsShareModalOpen(false)} className="p-3 hover:bg-black/5 rounded-full transition-all"><X size={20} className="text-art-text-dim" /></button>
               </div>
@@ -203,12 +203,12 @@ export default function SphereViewer() {
                     </div>
                     <div>
                       <p className="text-xs font-black uppercase tracking-wider">{album?.is_public ? 'Public' : 'Private'}</p>
-                      <p className="text-[9px] text-art-text-dim font-bold mt-1">{album?.is_public ? 'Linked Access' : 'Owner Only'}</p>
+                      <p className="text-[11px] text-art-text-dim font-bold mt-1">{album?.is_public ? 'Linked Access' : 'Owner Only'}</p>
                     </div>
                   </div>
                   <button 
                     onClick={togglePublic}
-                    className={`px-6 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${album?.is_public ? 'bg-red-50 text-red-500 hover:bg-red-500 hover:text-white' : 'bg-art-accent/10 text-art-accent hover:bg-art-accent hover:text-white'}`}
+                    className={`px-6 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${album?.is_public ? 'bg-red-50 text-red-500 hover:bg-red-500 hover:text-white' : 'bg-art-accent/10 text-art-accent hover:bg-art-accent hover:text-white'}`}
                   >
                     {album?.is_public ? 'Disable' : 'Enable'}
                   </button>
@@ -217,7 +217,7 @@ export default function SphereViewer() {
                 {album?.is_public && (
                   <button 
                     onClick={copyShareLink}
-                    className="w-full py-5 bg-art-text text-art-bg font-black uppercase tracking-[0.2em] text-[10px] rounded-2xl hover:bg-art-accent hover:text-white transition-all shadow-xl shadow-art-text/10 flex items-center justify-center gap-3"
+                    className="w-full py-5 bg-art-text text-art-bg font-black uppercase tracking-[0.2em] text-[12px] rounded-2xl hover:bg-art-accent hover:text-white transition-all shadow-xl shadow-art-text/10 flex items-center justify-center gap-3"
                   >
                     <Share2 size={14} /> Copy Public URI
                   </button>
@@ -231,7 +231,7 @@ export default function SphereViewer() {
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 w-[calc(100%-3rem)] max-w-2xl">
         <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 px-6 sm:px-10 py-4 sm:py-6 warm-glass rounded-[2rem] sm:rounded-full shadow-lg border-white/80">
           <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-start">
-            <span className="text-[9px] uppercase tracking-[0.3em] text-art-text-dim font-black">Sens</span>
+            <span className="text-[11px] uppercase tracking-[0.3em] text-art-text-dim font-black">Sens</span>
             <input 
               type="range" min="0.5" max="10" step="0.1" 
               value={sensitivity} onChange={(e) => setSensitivity(parseFloat(e.target.value))} 
@@ -244,7 +244,7 @@ export default function SphereViewer() {
           <div className="flex items-center gap-6 w-full sm:w-auto justify-center">
             <button 
               onClick={() => setInvertControls(!invertControls)} 
-              className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-art-text-dim hover:text-art-accent transition-all font-black"
+              className="flex items-center gap-2 text-[12px] uppercase tracking-[0.2em] text-art-text-dim hover:text-art-accent transition-all font-black"
             >
               Mode: <span className="text-art-text">{invertControls ? 'Look' : 'Drag'}</span>
             </button>
@@ -253,11 +253,11 @@ export default function SphereViewer() {
               <>
                 <div className="w-[1px] h-4 bg-art-line sm:hidden"></div>
                 {cameraStarted ? (
-                  <button onClick={() => setCameraStarted(false)} className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-red-400 hover:text-red-600 transition-all font-black">
+                  <button onClick={() => setCameraStarted(false)} className="flex items-center gap-2 text-[12px] uppercase tracking-[0.2em] text-red-400 hover:text-red-600 transition-all font-black">
                     <Camera size={14} /> Stop
                   </button>
                 ) : (
-                  <button onClick={requestCamera} className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-art-accent hover:text-art-accent/80 transition-all font-black">
+                  <button onClick={requestCamera} className="flex items-center gap-2 text-[12px] uppercase tracking-[0.2em] text-art-accent hover:text-art-accent/80 transition-all font-black">
                     <Camera size={14} /> Init
                   </button>
                 )}
@@ -268,7 +268,7 @@ export default function SphereViewer() {
       </div>
 
       <div className="absolute bottom-6 right-6 sm:bottom-10 sm:right-10 z-10 flex flex-col items-end gap-4">
-        <button onClick={() => setDebugHands(!debugHands)} className="text-[9px] uppercase tracking-[0.3em] text-art-text-dim/40 hover:text-art-text transition-all font-black">
+        <button onClick={() => setDebugHands(!debugHands)} className="text-[11px] uppercase tracking-[0.3em] text-art-text-dim/40 hover:text-art-text transition-all font-black">
           {debugHands ? 'Hide Feed' : 'Diagnostics'}
         </button>
         <div className={`w-48 sm:w-64 aspect-video bg-white/50 backdrop-blur-3xl rounded-3xl border border-white shadow-2xl overflow-hidden transition-all duration-700 origin-bottom-right ${debugHands ? 'scale-100 opacity-100' : 'scale-50 opacity-0 pointer-events-none'}`}>
@@ -287,7 +287,7 @@ export default function SphereViewer() {
           <div className="absolute inset-0 z-50 bg-white/80 backdrop-blur-xl flex items-center justify-center p-12 text-center">
             <div className="max-w-xs warm-glass p-10 rounded-[3rem] shadow-xl">
               <h3 className="text-xl font-black uppercase tracking-[0.2em] text-art-text">Access Required</h3>
-              <p className="text-[10px] text-art-text-dim mt-4 uppercase tracking-widest font-bold leading-loose">Allow camera permissions to enable spatial navigation protocols.</p>
+              <p className="text-[12px] text-art-text-dim mt-4 uppercase tracking-widest font-bold leading-loose">Allow camera permissions to enable spatial navigation protocols.</p>
             </div>
           </div>
         )}

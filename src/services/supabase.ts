@@ -7,6 +7,9 @@ export interface Album {
   created_at: string;
   user_id?: string;
   is_public?: boolean;
+  drive_folder_id?: string;
+  invite_code?: string;
+  allow_guest_uploads?: boolean;
 }
 
 export interface Photo {
@@ -16,18 +19,31 @@ export interface Photo {
   title?: string;
   description?: string;
   created_at?: string;
+  uploaded_by?: string; // Track who uploaded the photo
+}
+
+export interface AlbumMember {
+  album_id: string;
+  user_id: string;
+  role: 'owner' | 'contributor' | 'viewer';
 }
 
 export const albumService = {
   async fetchAlbums(userId: string): Promise<Album[]> {
+    return this.fetchUserAlbums(userId);
+  },
+
+  async fetchUserAlbums(userId: string): Promise<Album[]> {
     const { data, error } = await supabase
-      .from('albums')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false });
+      .from('album_members')
+      .select('role, albums(*)')
+      .eq('user_id', userId);
     
     if (error) throw error;
-    return data || [];
+    return (data || []).map((item: any) => ({
+      ...item.albums,
+      user_role: item.role
+    }));
   },
 
   async fetchAlbum(id: string): Promise<Album> {
@@ -55,14 +71,39 @@ export const albumService = {
 
   async createAlbum(userId: string, name: string): Promise<Album> {
     const id = uuidv4();
+    const invite_code = uuidv4().slice(0, 8).toUpperCase();
     const { data, error } = await supabase
       .from('albums')
-      .insert([{ id, name, user_id: userId, is_public: false }])
+      .insert([{ 
+        id, 
+        name, 
+        user_id: userId, 
+        is_public: false,
+        invite_code,
+        allow_guest_uploads: true
+      }])
       .select()
       .single();
     
     if (error) throw error;
+
+    // Auto-join the creator as 'owner'
+    await albumMemberService.addMember(id, userId, 'owner');
+    
     return data;
+  },
+
+  async joinAlbumByInviteCode(userId: string, inviteCode: string): Promise<Album> {
+    const { data: album, error: findError } = await supabase
+      .from('albums')
+      .select('*')
+      .eq('invite_code', inviteCode)
+      .single();
+    
+    if (findError) throw new Error('Invalid invite code');
+
+    await albumMemberService.addMember(album.id, userId, 'contributor');
+    return album;
   },
 
   async updateAlbum(id: string, updates: Partial<Album>): Promise<void> {
@@ -85,6 +126,28 @@ export const albumService = {
       .eq('id', id);
     
     if (error) throw error;
+  }
+};
+
+export const albumMemberService = {
+  async addMember(albumId: string, userId: string, role: 'owner' | 'contributor' | 'viewer'): Promise<void> {
+    const { error } = await supabase
+      .from('album_members')
+      .upsert([{ album_id: albumId, user_id: userId, role }], { onConflict: 'album_id,user_id' });
+    
+    if (error) throw error;
+  },
+
+  async getRole(albumId: string, userId: string): Promise<'owner' | 'contributor' | 'viewer' | null> {
+    const { data, error } = await supabase
+      .from('album_members')
+      .select('role')
+      .eq('album_id', albumId)
+      .eq('user_id', userId)
+      .single();
+    
+    if (error) return null;
+    return data.role;
   }
 };
 

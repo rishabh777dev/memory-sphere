@@ -13,13 +13,13 @@
   }
 
   .dark {
-    --art-bg: #1D1D1B;
+    --art-bg: #141412;
     --art-accent: #E79A6B;
     --art-text: #E3DBC7;
-    --art-text-dim: #A09B8E;
-    --art-line: rgba(227, 219, 199, 0.12);
-    --art-glass-bg: rgba(0, 0, 0, 0.6);
-    --art-glass-border: rgba(227, 219, 199, 0.15);
+    --art-text-dim: #928D81;
+    --art-line: rgba(227, 219, 199, 0.1);
+    --art-glass-bg: rgba(20, 20, 18, 0.6);
+    --art-glass-border: rgba(227, 219, 199, 0.12);
   }
 }
 

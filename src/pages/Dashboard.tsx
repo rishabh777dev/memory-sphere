@@ -6,6 +6,7 @@ import { SphereManageModal } from '../components/SphereManageModal';
 import { useAuth } from '../hooks/useAuth';
 import { albumService, type Album } from '../services/supabase';
 import { ThemeToggle } from '../components/ThemeToggle';
+import { SpatialBackground } from '../components/SpatialBackground';
 
 const { motion } = FramerMotion;
 
@@ -95,21 +96,18 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-art-bg text-art-text font-sans p-6 sm:p-10 md:p-20 relative overflow-y-auto custom-scrollbar">
-      
-      {/* Background Decor */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-art-accent/10 blur-[120px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/3"></div>
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-art-accent/5 blur-[100px] rounded-full pointer-events-none translate-y-1/2 -translate-x-1/4"></div>
+      <SpatialBackground />
 
       <header className="mb-12 sm:mb-20 flex flex-col sm:flex-row justify-between items-start sm:items-end border-b border-art-line pb-8 relative z-10 gap-6">
         <div>
           <h1 className="text-3xl sm:text-4xl font-black uppercase tracking-[0.3em] text-art-text">Your Vault</h1>
-          <p className="text-art-text-dim text-[12px] tracking-[0.2em] uppercase mt-2 font-bold">Manage your Spatial Spheres</p>
+          <p className="text-art-text-dim text-[12px] tracking-[0.2em] uppercase mt-2 font-black opacity-60">Manage your Spatial Spheres</p>
         </div>
         <div className="flex items-center gap-6">
           <ThemeToggle />
           <button 
             onClick={handleLogout} 
-            className="px-6 py-3 rounded-full warm-glass text-[12px] text-art-text-dim hover:text-art-accent uppercase tracking-widest transition-all font-black shadow-sm"
+            className="px-8 py-4 rounded-full warm-glass text-[11px] text-art-text hover:text-art-accent uppercase tracking-widest transition-all font-black shadow-sm"
           >
             Terminate Session
           </button>
@@ -123,14 +121,14 @@ export default function Dashboard() {
           variants={itemVars}
           onClick={createNewSphere}
           disabled={isCreating}
-          className="group flex flex-col items-center justify-center h-64 sm:h-72 rounded-[2.5rem] border-2 border-dashed border-art-line bg-white/20 hover:border-art-accent/50 hover:bg-white/40 transition-all text-art-text-dim hover:text-art-accent"
+          className="group flex flex-col items-center justify-center h-64 sm:h-72 rounded-[2.5rem] border-2 border-dashed border-art-line bg-art-glass-bg hover:border-art-accent/50 hover:bg-white/10 transition-all text-art-text-dim hover:text-art-accent"
         >
           {isCreating ? (
             <Loader2 className="w-10 h-10 animate-spin" />
           ) : (
             <>
               <Plus className="w-12 h-12 mb-4 group-hover:scale-110 transition-transform" />
-              <span className="text-[11px] font-black uppercase tracking-[0.3em]">Initialize Sphere</span>
+              <span className="text-[12px] font-black uppercase tracking-[0.3em]">Initialize Sphere</span>
             </>
           )}
         </motion.button>
@@ -144,7 +142,7 @@ export default function Dashboard() {
             >
               <div className="z-10 relative">
                 <div className="flex justify-between items-start mb-6">
-                  <div className="w-12 h-12 rounded-2xl bg-white/50 border border-art-line flex items-center justify-center text-art-text-dim group-hover:border-art-accent/50 group-hover:text-art-accent transition-colors shadow-sm">
+                  <div className="w-12 h-12 rounded-2xl bg-art-glass-bg border border-art-line flex items-center justify-center text-art-text-dim group-hover:border-art-accent/50 group-hover:text-art-accent transition-colors shadow-sm">
                     <Database size={18} />
                   </div>
                   <button 
@@ -161,7 +159,7 @@ export default function Dashboard() {
                       type="text" 
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
-                      className="bg-white/80 border border-art-accent/30 text-art-text px-4 py-2 rounded-xl text-lg font-bold outline-none w-full shadow-inner"
+                      className="bg-art-glass-bg border border-art-accent/30 text-art-text px-4 py-2 rounded-xl text-lg font-bold outline-none w-full shadow-inner"
                       autoFocus
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') saveAlbumName(e as any, album.id);
@@ -170,7 +168,7 @@ export default function Dashboard() {
                     />
                     <div className="flex gap-2 mt-2">
                       <button onClick={(e) => saveAlbumName(e, album.id)} className="p-2 bg-art-accent text-white rounded-lg hover:bg-art-accent/80 transition-colors shadow-sm"><Check size={14} /></button>
-                      <button onClick={() => setEditingId(null)} className="p-2 bg-white border border-art-line text-art-text-dim rounded-lg hover:bg-gray-50 transition-colors shadow-sm"><X size={14} /></button>
+                      <button onClick={() => setEditingId(null)} className="p-2 bg-art-glass-bg border border-art-line text-art-text-dim rounded-lg hover:bg-white/10 transition-colors shadow-sm"><X size={14} /></button>
                     </div>
                   </div>
                 ) : (
@@ -195,7 +193,7 @@ export default function Dashboard() {
                 )}
               </div>
 
-              <div className="z-10 relative flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] font-black text-art-text-dim group-hover:text-art-text transition-colors">
+              <div className="z-10 relative flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] font-black text-art-text-dim group-hover:text-art-text transition-colors">
                 Open Space <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform text-art-accent" />
               </div>
             </div>
