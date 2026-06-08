@@ -54,8 +54,8 @@ function MemoryNode({ position, color, speed, index }: { position: [number, numb
 
 function Scene({ theme }: { theme: 'light' | 'dark' }) {
   const { camera } = useThree();
-  const accentColor = theme === 'light' ? '#D97757' : '#E69A6B';
-  const nodeColor = theme === 'light' ? '#F3EFEA' : '#4A4A4A';
+  const accentColor = '#E79A6B'; // Amber stays consistent
+  const nodeColor = theme === 'light' ? '#E3DBC7' : '#2A2A2A'; 
 
   const nodes = useMemo(() => {
     return Array.from({ length: 15 }).map((_, i) => ({
@@ -79,7 +79,7 @@ function Scene({ theme }: { theme: 'light' | 'dark' }) {
   return (
     <>
       <Environment preset={theme === 'light' ? 'studio' : 'night'} />
-      <ambientLight intensity={theme === 'light' ? 1.0 : 0.4} />
+      <ambientLight intensity={theme === 'light' ? 1.0 : 0.5} />
       <pointLight position={[10, 10, 10]} intensity={2.0} color={accentColor} />
       <pointLight position={[-10, -10, -10]} intensity={1.5} color={nodeColor} />
       
@@ -87,7 +87,7 @@ function Scene({ theme }: { theme: 'light' | 'dark' }) {
         <MemoryNode key={i} index={i} {...node} />
       ))}
 
-      <gridHelper args={[100, 40, accentColor, '#2A2A2A']} rotation={[Math.PI / 2, 0, 0]} position={[0, 0, -15]} />
+      <gridHelper args={[100, 40, accentColor, theme === 'light' ? '#E3DBC7' : '#2A2A2A']} rotation={[Math.PI / 2, 0, 0]} position={[0, 0, -15]} />
     </>
   );
 }

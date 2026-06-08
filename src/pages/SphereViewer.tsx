@@ -125,12 +125,12 @@ export default function SphereViewer() {
   return (
     <div className="relative w-full h-screen bg-art-bg overflow-hidden font-sans text-art-text selection:bg-art-accent selection:text-white transition-colors duration-500">
       
-      <div className="absolute inset-0 z-0 opacity-60 md:opacity-100" style={{ background: theme === 'light' ? 'radial-gradient(circle_at_center,#fff_0%,#F3EFEA_100%)' : 'radial-gradient(circle_at_center,#1a1a1a_0%,#000_100%)' }}>
+      <div className="absolute inset-0 z-0 opacity-60 md:opacity-100" style={{ background: theme === 'light' ? 'radial-gradient(circle_at_center,#fff_0%,#F5F2ED_100%)' : 'radial-gradient(circle_at_center,#1D1D1B_0%,#000_100%)' }}>
         <Suspense fallback={null}>
           <Canvas gl={{ antialias: false }}>
             <PerspectiveCamera makeDefault position={[0, 0, 0.1]} fov={75} near={0.01} far={1000} />
-            <ambientLight intensity={theme === 'light' ? 1.2 : 0.6} />
-            <pointLight position={[5, 5, 5]} intensity={1.5} />
+            <ambientLight intensity={theme === 'light' ? 1.2 : 0.7} />
+            <pointLight position={[5, 5, 5]} intensity={1.5} color={theme === 'light' ? '#fff' : '#E79A6B'} />
             <MemorySphere memories={memories} resultsRef={resultsRef} sensitivity={sensitivity} onGestureMode={setGestureMode} invertControls={invertControls} />
             <Loader />
           </Canvas>

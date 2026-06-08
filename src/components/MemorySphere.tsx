@@ -262,7 +262,7 @@ export function MemorySphere({ memories, resultsRef, sensitivity, onGestureMode,
   const backgroundDots = useMemo(() => Array.from({ length: 20 }).map((_, i) => (
     <mesh key={i} position={[(Math.random() - 0.5) * 45, (Math.random() - 0.5) * 45, (Math.random() - 0.5) * 45]}>
       <sphereGeometry args={[0.04, 8, 8]} />
-      <meshBasicMaterial color="#00FF94" transparent opacity={0.15} />
+      <meshBasicMaterial color="#E79A6B" transparent opacity={0.15} />
     </mesh>
   )), []);
 

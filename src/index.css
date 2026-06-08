@@ -3,23 +3,23 @@
 
 @layer base {
   :root {
-    --art-bg: #FDFBF7;
-    --art-accent: #D97757;
-    --art-text: #2A2A2A;
-    --art-text-dim: #5A5A5A;
-    --art-line: rgba(42, 42, 42, 0.1);
-    --art-glass-bg: rgba(255, 255, 255, 0.4);
+    --art-bg: #F5F2ED;
+    --art-accent: #E79A6B;
+    --art-text: #1D1D1B;
+    --art-text-dim: #7A7670;
+    --art-line: rgba(29, 29, 27, 0.08);
+    --art-glass-bg: rgba(227, 219, 199, 0.4);
     --art-glass-border: rgba(255, 255, 255, 0.6);
   }
 
   .dark {
-    --art-bg: #0A0A0A;
-    --art-accent: #E69A6B;
-    --art-text: #F3EFEA;
-    --art-text-dim: #B0B0B0;
-    --art-line: rgba(255, 255, 255, 0.12);
+    --art-bg: #1D1D1B;
+    --art-accent: #E79A6B;
+    --art-text: #E3DBC7;
+    --art-text-dim: #A09B8E;
+    --art-line: rgba(227, 219, 199, 0.12);
     --art-glass-bg: rgba(0, 0, 0, 0.6);
-    --art-glass-border: rgba(255, 255, 255, 0.15);
+    --art-glass-border: rgba(227, 219, 199, 0.15);
   }
 }
 
