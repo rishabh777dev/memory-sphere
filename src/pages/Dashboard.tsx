@@ -45,8 +45,9 @@ export default function Dashboard() {
       const newAlbum = await albumService.createAlbum(user.id, newName);
       setAlbums(prev => [newAlbum, ...prev]);
       setManagingAlbum(newAlbum);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to create album:', err);
+      alert(`Database Error: ${err.message || JSON.stringify(err)}`);
     } finally {
       setIsCreating(false);
     }
